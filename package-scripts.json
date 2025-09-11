@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "setup": "echo 'AYUSH ONE Setup Instructions:' && echo '1. Update .env.local with your Supabase credentials' && echo '2. Run the schema.sql in Supabase SQL Editor' && echo '3. Optionally run seed.sql for test data' && echo '4. npm run dev to start development server'",
+    "build-production": "npm run build && npm run start",
+    "deploy-vercel": "vercel --prod",
+    "setup-supabase": "echo 'Run supabase/schema.sql in your Supabase project SQL editor'"
+  }
+}

@@ -1,36 +1,151 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AYUSH ONE - Hackathon MVP
 
-## Getting Started
+A Next.js application connecting patients with verified AYUSH doctors for online consultations.
 
-First, run the development server:
+## 🎯 Features
 
+### Doctor Flow
+- ✅ Sign up with doctor role
+- ✅ Create/update profile with specialty & city
+- ✅ Upload license document
+- ✅ Auto-verification (demo mode)
+- ✅ Appear in search with verified badge
+
+### Citizen Flow
+- ✅ Sign up with citizen role
+- ✅ Search doctors by specialty & city
+- ✅ View verified doctors
+- ✅ Book appointments
+- ✅ Video consultation with Jitsi
+
+## 🛠️ Tech Stack
+
+- **Frontend**: Next.js 15 + TypeScript + Tailwind CSS
+- **Backend**: Next.js API Routes
+- **Database**: Supabase (PostgreSQL)
+- **Auth**: Supabase Auth
+- **Storage**: Supabase Storage
+- **Video**: Jitsi Meet
+- **Deployment**: Ready for Vercel
+
+## 🚀 Quick Setup
+
+### 1. Clone and Install
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Set up Supabase
+1. Create a new project at [supabase.com](https://supabase.com)
+2. Copy your project URL and anon key
+3. Update `.env.local`:
+```env
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+NEXT_PUBLIC_JITSI_DOMAIN=meet.jit.si
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Set up Database
+1. Go to Supabase SQL Editor
+2. Run the schema from `supabase/schema.sql`
+3. Optionally run seed data from `supabase/seed.sql`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 4. Run Development Server
+```bash
+npm run dev
+```
 
-## Learn More
+Open [http://localhost:3000](http://localhost:3000) to see the application.
 
-To learn more about Next.js, take a look at the following resources:
+## 📊 Database Schema
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Users Table
+- Extends Supabase auth.users
+- Stores name, email, role (doctor/citizen)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Doctors Table
+- Doctor profiles with specialty, city
+- License URL and verification status
+- Links to users table
 
-## Deploy on Vercel
+### Appointments Table
+- Appointment bookings between citizens and doctors
+- Includes Jitsi room ID for video calls
+- Status tracking (pending, confirmed, completed, cancelled)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🔐 Authentication
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Using Supabase Auth with Row Level Security (RLS) policies:
+- Users can only view/edit their own data
+- Doctors appear in public search when verified
+- Appointment access restricted to participants
+
+## 📱 Key Pages
+
+- `/` - Landing page with features overview
+- `/auth/signup` - User registration with role selection
+- `/auth/signin` - User login
+- `/doctors` - Search and browse verified doctors
+- `/doctor/profile` - Doctor profile management & license upload
+- `/appointments/book` - Appointment booking form
+- `/appointments/[id]` - Appointment details with Jitsi integration
+- `/appointments` - User's appointments list
+
+## 🎥 Video Consultation
+
+Integrated with Jitsi Meet for secure video consultations:
+- Unique room ID generated for each appointment
+- Join link available 15 minutes before appointment
+- No additional setup required - works in browser
+
+## 🚀 Deployment
+
+### Deploy to Vercel
+1. Push code to GitHub
+2. Connect repository to Vercel
+3. Add environment variables
+4. Deploy!
+
+### Environment Variables for Production
+```env
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+NEXT_PUBLIC_JITSI_DOMAIN=meet.jit.si
+```
+
+## 🔧 API Endpoints
+
+- `GET /api/doctors` - Search doctors with filters
+- `POST /api/doctors` - Create/update doctor profile
+- `POST /api/doctors/upload` - Upload license & verify
+- `GET /api/appointments` - Get user appointments
+- `POST /api/appointments` - Book new appointment
+- `GET /api/appointments/[id]` - Get appointment details
+
+## 🎮 Demo Features
+
+- Auto-verification for uploaded licenses (production would have manual review)
+- Pre-seeded specialties and cities
+- Immediate appointment confirmation
+- Test video rooms work without registration
+
+## 📝 Next Steps
+
+For production deployment:
+- Implement manual license verification workflow
+- Add payment integration
+- Email notifications for appointments
+- Advanced search filters
+- Doctor availability calendar
+- Prescription management
+- Medical records integration
+
+## 👥 Team
+
+Built for AYUSH ONE Hackathon - connecting traditional medicine practitioners with patients through technology.
+
+---
+
+**Note**: This is a hackathon MVP focused on core functionality. Some features are simplified for demo purposes.
