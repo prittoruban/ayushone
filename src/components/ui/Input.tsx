@@ -13,26 +13,26 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="w-full">
         {label && (
-          <label className="block text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-2">
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
             {label}
-            {props.required && <span className="text-error-500 ml-1">*</span>}
+            {props.required && <span className="text-red-500 ml-1">*</span>}
           </label>
         )}
         <div className="relative">
           {icon && (
-            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-secondary-400">
+            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 dark:text-slate-500">
               {icon}
             </div>
           )}
           <input
             type={type}
             className={cn(
-              'flex h-11 w-full rounded-xl border border-secondary-200 dark:border-secondary-700 bg-white dark:bg-secondary-800 px-4 py-2 text-sm transition-all',
-              'placeholder:text-secondary-400 dark:placeholder:text-secondary-500',
-              'text-secondary-900 dark:text-secondary-100',
-              'focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20',
+              'flex h-11 w-full rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 px-4 py-2 text-sm transition-all',
+              'placeholder:text-slate-400 dark:placeholder:text-slate-500',
+              'text-slate-900 dark:text-white',
+              'focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20',
               'disabled:cursor-not-allowed disabled:opacity-50',
-              error && 'border-error-500 focus:border-error-500 focus:ring-error-500/20',
+              error && 'border-red-500 focus:border-red-500 focus:ring-red-500/20',
               icon && 'pl-10',
               className
             )}
@@ -41,10 +41,10 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           />
         </div>
         {error && (
-          <p className="mt-1 text-sm text-error-600 dark:text-error-400 animate-fade-in">{error}</p>
+          <p className="mt-1 text-sm text-red-600 dark:text-red-400 animate-fade-in">{error}</p>
         )}
         {helperText && !error && (
-          <p className="mt-1 text-sm text-secondary-500 dark:text-secondary-400">{helperText}</p>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{helperText}</p>
         )}
       </div>
     )
@@ -63,29 +63,29 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     return (
       <div className="w-full">
         {label && (
-          <label className="block text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-2">
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
             {label}
-            {props.required && <span className="text-error-500 ml-1">*</span>}
+            {props.required && <span className="text-red-500 ml-1">*</span>}
           </label>
         )}
         <textarea
           className={cn(
-            'flex min-h-[80px] w-full rounded-xl border border-secondary-200 dark:border-secondary-700 bg-white dark:bg-secondary-800 px-4 py-3 text-sm transition-all',
-            'placeholder:text-secondary-400 dark:placeholder:text-secondary-500',
-            'text-secondary-900 dark:text-secondary-100',
-            'focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20',
+            'flex min-h-[80px] w-full rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 px-4 py-3 text-sm transition-all',
+            'placeholder:text-slate-400 dark:placeholder:text-slate-500',
+            'text-slate-900 dark:text-white',
+            'focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20',
             'disabled:cursor-not-allowed disabled:opacity-50',
-            error && 'border-error-500 focus:border-error-500 focus:ring-error-500/20',
+            error && 'border-red-500 focus:border-red-500 focus:ring-red-500/20',
             className
           )}
           ref={ref}
           {...props}
         />
         {error && (
-          <p className="mt-1 text-sm text-error-600 dark:text-error-400 animate-fade-in">{error}</p>
+          <p className="mt-1 text-sm text-red-600 dark:text-red-400 animate-fade-in">{error}</p>
         )}
         {helperText && !error && (
-          <p className="mt-1 text-sm text-secondary-500 dark:text-secondary-400">{helperText}</p>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{helperText}</p>
         )}
       </div>
     )
@@ -106,18 +106,18 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
     return (
       <div className="w-full">
         {label && (
-          <label className="block text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-2">
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
             {label}
-            {props.required && <span className="text-error-500 ml-1">*</span>}
+            {props.required && <span className="text-red-500 ml-1">*</span>}
           </label>
         )}
         <select
           className={cn(
-            'flex h-11 w-full rounded-xl border border-secondary-200 dark:border-secondary-700 bg-white dark:bg-secondary-800 px-4 py-2 text-sm transition-all',
-            'text-secondary-900 dark:text-secondary-100',
-            'focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20',
+            'flex h-11 w-full rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 px-4 py-2 text-sm transition-all',
+            'text-slate-900 dark:text-white',
+            'focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20',
             'disabled:cursor-not-allowed disabled:opacity-50',
-            error && 'border-error-500 focus:border-error-500 focus:ring-error-500/20',
+            error && 'border-red-500 focus:border-red-500 focus:ring-red-500/20',
             className
           )}
           ref={ref}
@@ -135,10 +135,10 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           ))}
         </select>
         {error && (
-          <p className="mt-1 text-sm text-error-600 dark:text-error-400 animate-fade-in">{error}</p>
+          <p className="mt-1 text-sm text-red-600 dark:text-red-400 animate-fade-in">{error}</p>
         )}
         {helperText && !error && (
-          <p className="mt-1 text-sm text-secondary-500 dark:text-secondary-400">{helperText}</p>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{helperText}</p>
         )}
       </div>
     )

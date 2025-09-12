@@ -139,14 +139,14 @@ export default function DoctorsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-slate-900">
       <Navbar />
       
       {/* Hero Section */}
       <section className="relative pt-16 pb-8">
-        <div className="absolute inset-0 bg-gradient-to-b from-primary-50/30 via-white to-white" />
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary-200/20 rounded-full blur-3xl animate-float" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent-200/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }} />
+        <div className="absolute inset-0 bg-gradient-to-b from-blue-50/30 via-white to-white dark:from-slate-800/30 dark:via-slate-900 dark:to-slate-900" />
+        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-200/20 dark:bg-blue-400/10 rounded-full blur-3xl animate-float" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-200/20 dark:bg-purple-400/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }} />
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 animate-fade-in-up">
@@ -155,14 +155,14 @@ export default function DoctorsPage() {
               Find Your Perfect Match
             </Badge>
             
-            <h1 className="text-4xl md:text-5xl font-bold text-secondary-900 mb-6 leading-tight">
+            <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-6 leading-tight">
               Discover 
               <span className="gradient-text"> Verified AYUSH</span>
               <br />
               Practitioners
             </h1>
             
-            <p className="text-xl text-secondary-600 max-w-3xl mx-auto mb-8 leading-relaxed">
+            <p className="text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto mb-8 leading-relaxed">
               Connect with qualified and verified traditional medicine practitioners. 
               Find experts in Ayurveda, Yoga, Unani, Siddha, and Homeopathy near you.
             </p>
@@ -170,20 +170,20 @@ export default function DoctorsPage() {
             {/* Quick Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-2xl mx-auto">
               <div className="text-center">
-                <div className="text-2xl font-bold text-primary-600">{doctors.length}+</div>
-                <div className="text-sm text-secondary-600">Doctors Available</div>
+                <div className="text-2xl font-bold text-blue-600">{doctors.length}+</div>
+                <div className="text-sm text-slate-600 dark:text-slate-400">Doctors Available</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-accent-600">4.9</div>
-                <div className="text-sm text-secondary-600">Average Rating</div>
+                <div className="text-2xl font-bold text-purple-600">4.9</div>
+                <div className="text-sm text-slate-600 dark:text-slate-400">Average Rating</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-success-600">24/7</div>
-                <div className="text-sm text-secondary-600">Support</div>
+                <div className="text-2xl font-bold text-green-600">24/7</div>
+                <div className="text-sm text-slate-600 dark:text-slate-400">Support</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-warning-600">2min</div>
-                <div className="text-sm text-secondary-600">Response Time</div>
+                <div className="text-2xl font-bold text-yellow-600">2min</div>
+                <div className="text-sm text-slate-600 dark:text-slate-400">Response Time</div>
               </div>
             </div>
           </div>
@@ -197,19 +197,19 @@ export default function DoctorsPage() {
             <CardContent className="p-8">
               <div className="flex items-center mb-6">
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-primary-100 rounded-xl flex items-center justify-center">
-                    <Filter className="w-5 h-5 text-primary-600" />
+                  <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-xl flex items-center justify-center">
+                    <Filter className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-semibold text-secondary-900">Find Your Doctor</h2>
-                    <p className="text-sm text-secondary-600">Search by specialty and location</p>
+                    <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Find Your Doctor</h2>
+                    <p className="text-sm text-slate-600 dark:text-slate-400">Search by specialty and location</p>
                   </div>
                 </div>
               </div>
               
               <form onSubmit={handleSearch} className="space-y-6 md:space-y-0 md:grid md:grid-cols-3 md:gap-6">
                 <div>
-                  <label htmlFor="specialty" className="block text-sm font-medium text-secondary-700 mb-2">
+                  <label htmlFor="specialty" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                     <Award className="w-4 h-4 inline mr-2" />
                     Specialty
                   </label>
@@ -217,7 +217,7 @@ export default function DoctorsPage() {
                     id="specialty"
                     value={searchSpecialty}
                     onChange={(e) => setSearchSpecialty(e.target.value)}
-                    className="w-full px-4 py-3 bg-white border border-secondary-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors duration-200"
+                    className="w-full px-4 py-3 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
                   >
                     <option value="">All Specialties</option>
                     {specialties.map((specialty) => (
@@ -229,7 +229,7 @@ export default function DoctorsPage() {
                 </div>
                 
                 <div>
-                  <label htmlFor="city" className="block text-sm font-medium text-secondary-700 mb-2">
+                  <label htmlFor="city" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                     <MapPin className="w-4 h-4 inline mr-2" />
                     City
                   </label>
@@ -237,7 +237,7 @@ export default function DoctorsPage() {
                     id="city"
                     value={searchCity}
                     onChange={(e) => setSearchCity(e.target.value)}
-                    className="w-full px-4 py-3 bg-white border border-secondary-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors duration-200"
+                    className="w-full px-4 py-3 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
                   >
                     <option value="">All Cities</option>
                     {cities.map((city) => (
@@ -285,10 +285,10 @@ export default function DoctorsPage() {
           </div>
         ) : doctors.length === 0 ? (
           <div className="text-center py-16 animate-fade-in">
-            <div className="text-secondary-400 mb-6">
+            <div className="text-slate-400 dark:text-slate-500 mb-6">
               <Search className="h-16 w-16 mx-auto mb-4 opacity-50" />
-              <h3 className="text-xl font-semibold text-secondary-900 mb-2">No doctors found</h3>
-              <p className="text-secondary-600">Try adjusting your search criteria or browse all doctors</p>
+              <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">No doctors found</h3>
+              <p className="text-slate-600 dark:text-slate-400">Try adjusting your search criteria or browse all doctors</p>
             </div>
             <Button 
               variant="outline" 
@@ -306,10 +306,10 @@ export default function DoctorsPage() {
           <div className="space-y-8">
             <div className="flex items-center justify-between">
               <div className="animate-fade-in-left">
-                <h2 className="text-2xl font-bold text-secondary-900">
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
                   {doctors.length} Doctor{doctors.length !== 1 ? 's' : ''} Found
                 </h2>
-                <p className="text-secondary-600">Choose from verified practitioners</p>
+                <p className="text-slate-600 dark:text-slate-400">Choose from verified practitioners</p>
               </div>
               <Badge variant="outline" className="animate-fade-in-right">
                 <Shield className="w-4 h-4 mr-2" />
@@ -346,21 +346,21 @@ export default function DoctorsPage() {
                       </div>
                       
                       <div className="space-y-3 mb-6">
-                        <div className="flex items-center text-sm text-secondary-600">
-                          <Award className="h-4 w-4 mr-3 text-primary-500" />
+                        <div className="flex items-center text-sm text-slate-600 dark:text-slate-400">
+                          <Award className="h-4 w-4 mr-3 text-blue-500" />
                           <span className="font-medium">{doctor.specialty}</span>
                         </div>
-                        <div className="flex items-center text-sm text-secondary-600">
-                          <MapPin className="h-4 w-4 mr-3 text-accent-500" />
+                        <div className="flex items-center text-sm text-slate-600 dark:text-slate-400">
+                          <MapPin className="h-4 w-4 mr-3 text-purple-500" />
                           <span>{doctor.city}</span>
                         </div>
-                        <div className="flex items-center text-sm text-secondary-600">
-                          <Clock className="h-4 w-4 mr-3 text-success-500" />
+                        <div className="flex items-center text-sm text-slate-600 dark:text-slate-400">
+                          <Clock className="h-4 w-4 mr-3 text-green-500" />
                           <span>{doctor.experience_years} years experience</span>
                         </div>
                         {doctor.languages && doctor.languages.length > 0 && (
-                          <div className="flex items-start text-sm text-secondary-600">
-                            <Languages className="h-4 w-4 mr-3 text-warning-500 mt-0.5" />
+                          <div className="flex items-start text-sm text-slate-600 dark:text-slate-400">
+                            <Languages className="h-4 w-4 mr-3 text-yellow-500 mt-0.5" />
                             <div>
                               <span>Languages: </span>
                               <div className="flex flex-wrap gap-1 mt-1">
@@ -383,9 +383,9 @@ export default function DoctorsPage() {
                       {/* Rating placeholder */}
                       <div className="flex items-center space-x-1 mb-6">
                         {[1, 2, 3, 4, 5].map((star) => (
-                          <Star key={star} className="w-4 h-4 fill-warning-400 text-warning-400" />
+                          <Star key={star} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                         ))}
-                        <span className="text-sm text-secondary-600 ml-2">4.9 (127 reviews)</span>
+                        <span className="text-sm text-slate-600 dark:text-slate-400 ml-2">4.9 (127 reviews)</span>
                       </div>
                       
                       {user ? (

@@ -203,14 +203,14 @@ export default function DoctorProfilePage() {
 
   if (!user || userProfile?.role !== 'doctor') {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-white dark:bg-slate-900">
         <Navbar />
         <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
           <Card>
             <CardContent className="p-8 text-center">
               <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
-              <h2 className="text-xl font-semibold text-secondary-900 mb-2">Access Denied</h2>
-              <p className="text-secondary-600 mb-6">This page is only accessible to doctors.</p>
+              <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">Access Denied</h2>
+              <p className="text-slate-600 dark:text-slate-400 mb-6">This page is only accessible to doctors.</p>
               <Button variant="primary" onClick={() => router.push('/')}>
                 Go Home
               </Button>
@@ -222,13 +222,13 @@ export default function DoctorProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-slate-900">
       <Navbar />
       
       {/* Background decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary-200/20 rounded-full blur-3xl animate-float" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent-200/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-200/20 dark:bg-blue-400/10 rounded-full blur-3xl animate-float" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-200/20 dark:bg-purple-400/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
       </div>
       
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -239,30 +239,30 @@ export default function DoctorProfilePage() {
             Doctor Dashboard
           </Badge>
           
-          <h1 className="text-4xl md:text-5xl font-bold text-secondary-900 mb-6 leading-tight">
+          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-6 leading-tight">
             Complete Your 
             <span className="gradient-text"> Professional Profile</span>
           </h1>
           
-          <p className="text-xl text-secondary-600 max-w-3xl mx-auto mb-8">
+          <p className="text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto mb-8">
             Build your professional presence and start connecting with patients seeking traditional medicine expertise.
           </p>
           
           {/* Profile completion status */}
-          <div className="flex items-center justify-center space-x-8 p-6 bg-white/50 backdrop-blur-sm rounded-2xl border border-secondary-200">
+          <div className="flex items-center justify-center space-x-8 p-6 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-slate-700">
             <div className="text-center">
-              <div className="text-2xl font-bold text-primary-600">
+              <div className="text-2xl font-bold text-blue-600">
                 {specialty && city ? '80%' : '40%'}
               </div>
-              <div className="text-sm text-secondary-600">Profile Complete</div>
+              <div className="text-sm text-slate-600 dark:text-slate-400">Profile Complete</div>
             </div>
             {doctorProfile?.verified_badge ? (
-              <div className="flex items-center space-x-2 text-success-600">
+              <div className="flex items-center space-x-2 text-green-600">
                 <CheckCircle className="w-6 h-6" />
                 <span className="font-medium">Verified Doctor</span>
               </div>
             ) : (
-              <div className="flex items-center space-x-2 text-warning-600">
+              <div className="flex items-center space-x-2 text-yellow-600">
                 <Clock className="w-6 h-6" />
                 <span className="font-medium">Pending Verification</span>
               </div>
@@ -273,8 +273,8 @@ export default function DoctorProfilePage() {
         {message && (
           <div className={`mb-8 p-4 rounded-xl animate-fade-in ${
             message.includes('successfully') || message.includes('saved')
-              ? 'bg-success-50 text-success-700 border border-success-200'
-              : 'bg-red-50 text-red-700 border border-red-200'
+              ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800'
+              : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800'
           }`}>
             <div className="flex items-center space-x-2">
               {message.includes('successfully') ? (
@@ -293,19 +293,19 @@ export default function DoctorProfilePage() {
             <Card>
               <CardContent className="p-8">
                 <div className="flex items-center space-x-3 mb-6">
-                  <div className="w-10 h-10 bg-primary-100 rounded-xl flex items-center justify-center">
-                    <User className="w-5 h-5 text-primary-600" />
+                  <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-xl flex items-center justify-center">
+                    <User className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-semibold text-secondary-900">Basic Information</h2>
-                    <p className="text-sm text-secondary-600">Complete your professional details</p>
+                    <h2 className="text-xl font-semibold text-slate-900 dark:text-white">Basic Information</h2>
+                    <p className="text-sm text-slate-600 dark:text-slate-400">Complete your professional details</p>
                   </div>
                 </div>
                 
                 <form onSubmit={handleProfileSubmit} className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
-                      <label htmlFor="specialty" className="block text-sm font-medium text-secondary-700 mb-2">
+                      <label htmlFor="specialty" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                         <Award className="w-4 h-4 inline mr-2" />
                         Specialty *
                       </label>
@@ -314,7 +314,7 @@ export default function DoctorProfilePage() {
                         value={specialty}
                         onChange={(e) => setSpecialty(e.target.value)}
                         required
-                        className="w-full px-4 py-3 bg-white border border-secondary-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors duration-200"
+                        className="w-full px-4 py-3 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
                       >
                         <option value="">Select your specialty</option>
                         {specialties.map((spec) => (
@@ -326,7 +326,7 @@ export default function DoctorProfilePage() {
                     </div>
                     
                     <div>
-                      <label htmlFor="city" className="block text-sm font-medium text-secondary-700 mb-2">
+                      <label htmlFor="city" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                         <MapPin className="w-4 h-4 inline mr-2" />
                         City *
                       </label>
@@ -335,7 +335,7 @@ export default function DoctorProfilePage() {
                         value={city}
                         onChange={(e) => setCity(e.target.value)}
                         required
-                        className="w-full px-4 py-3 bg-white border border-secondary-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors duration-200"
+                        className="w-full px-4 py-3 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
                       >
                         <option value="">Select your city</option>
                         {cities.map((cityOption) => (
@@ -349,7 +349,7 @@ export default function DoctorProfilePage() {
                   
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
-                      <label htmlFor="license_number" className="block text-sm font-medium text-secondary-700 mb-2">
+                      <label htmlFor="license_number" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                         <FileText className="w-4 h-4 inline mr-2" />
                         License Number
                       </label>
@@ -363,7 +363,7 @@ export default function DoctorProfilePage() {
                     </div>
                     
                     <div>
-                      <label htmlFor="experience_years" className="block text-sm font-medium text-secondary-700 mb-2">
+                      <label htmlFor="experience_years" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                         <Calendar className="w-4 h-4 inline mr-2" />
                         Years of Experience
                       </label>
@@ -380,7 +380,7 @@ export default function DoctorProfilePage() {
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-secondary-700 mb-3">
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">
                       <Languages className="w-4 h-4 inline mr-2" />
                       Languages Spoken
                     </label>
@@ -388,8 +388,8 @@ export default function DoctorProfilePage() {
                       {availableLanguages.map((lang) => (
                         <label key={lang} className={`relative flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
                           languages.includes(lang)
-                            ? 'border-primary-500 bg-primary-50'
-                            : 'border-secondary-200 hover:border-secondary-300'
+                            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                            : 'border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:hover:border-slate-500'
                         }`}>
                           <input
                             type="checkbox"
@@ -406,14 +406,14 @@ export default function DoctorProfilePage() {
                           <div className="flex items-center space-x-2">
                             <div className={`w-4 h-4 rounded border-2 flex items-center justify-center ${
                               languages.includes(lang)
-                                ? 'border-primary-500 bg-primary-500'
-                                : 'border-secondary-300'
+                                ? 'border-blue-500 bg-blue-500'
+                                : 'border-slate-300 dark:border-slate-500'
                             }`}>
                               {languages.includes(lang) && (
                                 <CheckCircle className="w-3 h-3 text-white" />
                               )}
                             </div>
-                            <span className="text-sm text-secondary-700">{lang}</span>
+                            <span className="text-sm text-slate-700 dark:text-slate-300">{lang}</span>
                           </div>
                         </label>
                       ))}
@@ -451,12 +451,12 @@ export default function DoctorProfilePage() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-accent-100 rounded-xl flex items-center justify-center">
-                      <Shield className="w-5 h-5 text-accent-600" />
+                    <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900 rounded-xl flex items-center justify-center">
+                      <Shield className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-secondary-900">License Verification</h3>
-                      <p className="text-sm text-secondary-600">Upload your medical license</p>
+                      <h3 className="text-lg font-semibold text-slate-900 dark:text-white">License Verification</h3>
+                      <p className="text-sm text-slate-600 dark:text-slate-400">Upload your medical license</p>
                     </div>
                   </div>
                   {doctorProfile?.verified_badge && (
@@ -470,18 +470,18 @@ export default function DoctorProfilePage() {
                 {!doctorProfile?.verified_badge ? (
                   <form onSubmit={handleLicenseUpload} className="space-y-4">
                     <div>
-                      <div className="border-2 border-dashed border-secondary-300 rounded-xl p-6 text-center hover:border-primary-400 transition-colors duration-200">
-                        <Upload className="mx-auto h-12 w-12 text-secondary-400 mb-4" />
-                        <div className="text-sm text-secondary-600 mb-2">
+                      <div className="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-xl p-6 text-center hover:border-blue-400 dark:hover:border-blue-500 transition-colors duration-200">
+                        <Upload className="mx-auto h-12 w-12 text-slate-400 dark:text-slate-500 mb-4" />
+                        <div className="text-sm text-slate-600 dark:text-slate-400 mb-2">
                           <label
                             htmlFor="license"
-                            className="cursor-pointer font-medium text-primary-600 hover:text-primary-500"
+                            className="cursor-pointer font-medium text-blue-600 hover:text-blue-500"
                           >
                             Upload a file
                           </label>
                           <span> or drag and drop</span>
                         </div>
-                        <p className="text-xs text-secondary-500">
+                        <p className="text-xs text-slate-500 dark:text-slate-400">
                           PDF, JPG, PNG up to 10MB
                         </p>
                         <input
@@ -494,7 +494,7 @@ export default function DoctorProfilePage() {
                         />
                       </div>
                       {licenseFile && (
-                        <p className="mt-2 text-sm text-secondary-600 p-3 bg-primary-50 rounded-lg">
+                        <p className="mt-2 text-sm text-slate-600 dark:text-slate-400 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                           <FileText className="w-4 h-4 inline mr-2" />
                           Selected: {licenseFile.name}
                         </p>
@@ -522,13 +522,13 @@ export default function DoctorProfilePage() {
                   </form>
                 ) : (
                   <div className="text-center py-6">
-                    <div className="w-16 h-16 bg-success-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <CheckCircle className="h-10 w-10 text-success-600" />
+                    <div className="w-16 h-16 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <CheckCircle className="h-10 w-10 text-green-600" />
                     </div>
-                    <h4 className="text-lg font-medium text-secondary-900 mb-2">
+                    <h4 className="text-lg font-medium text-slate-900 dark:text-white mb-2">
                       License Verified!
                     </h4>
-                    <p className="text-secondary-600 text-sm">
+                    <p className="text-slate-600 dark:text-slate-400 text-sm">
                       You can now appear in search results and accept appointments.
                     </p>
                   </div>
@@ -540,38 +540,38 @@ export default function DoctorProfilePage() {
             <Card>
               <CardContent className="p-6">
                 <div className="flex items-center space-x-3 mb-6">
-                  <div className="w-10 h-10 bg-success-100 rounded-xl flex items-center justify-center">
-                    <Sparkles className="w-5 h-5 text-success-600" />
+                  <div className="w-10 h-10 bg-green-100 dark:bg-green-900 rounded-xl flex items-center justify-center">
+                    <Sparkles className="w-5 h-5 text-green-600 dark:text-green-400" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-secondary-900">Your Impact</h3>
-                    <p className="text-sm text-secondary-600">Track your progress</p>
+                    <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Your Impact</h3>
+                    <p className="text-sm text-slate-600 dark:text-slate-400">Track your progress</p>
                   </div>
                 </div>
                 
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between p-3 bg-primary-50 rounded-lg">
+                  <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                     <div className="flex items-center space-x-3">
-                      <User className="w-5 h-5 text-primary-600" />
-                      <span className="text-sm font-medium text-secondary-900">Profile Views</span>
+                      <User className="w-5 h-5 text-blue-600" />
+                      <span className="text-sm font-medium text-slate-900 dark:text-white">Profile Views</span>
                     </div>
-                    <span className="text-lg font-bold text-primary-600">127</span>
+                    <span className="text-lg font-bold text-blue-600">127</span>
                   </div>
                   
-                  <div className="flex items-center justify-between p-3 bg-accent-50 rounded-lg">
+                  <div className="flex items-center justify-between p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
                     <div className="flex items-center space-x-3">
-                      <Calendar className="w-5 h-5 text-accent-600" />
-                      <span className="text-sm font-medium text-secondary-900">Appointments</span>
+                      <Calendar className="w-5 h-5 text-purple-600" />
+                      <span className="text-sm font-medium text-slate-900 dark:text-white">Appointments</span>
                     </div>
-                    <span className="text-lg font-bold text-accent-600">23</span>
+                    <span className="text-lg font-bold text-purple-600">23</span>
                   </div>
                   
-                  <div className="flex items-center justify-between p-3 bg-warning-50 rounded-lg">
+                  <div className="flex items-center justify-between p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
                     <div className="flex items-center space-x-3">
-                      <Star className="w-5 h-5 text-warning-600" />
-                      <span className="text-sm font-medium text-secondary-900">Rating</span>
+                      <Star className="w-5 h-5 text-yellow-600" />
+                      <span className="text-sm font-medium text-slate-900 dark:text-white">Rating</span>
                     </div>
-                    <span className="text-lg font-bold text-warning-600">4.9</span>
+                    <span className="text-lg font-bold text-yellow-600">4.9</span>
                   </div>
                 </div>
               </CardContent>
