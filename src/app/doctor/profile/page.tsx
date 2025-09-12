@@ -9,6 +9,9 @@ import { Upload, CheckCircle, AlertCircle } from 'lucide-react'
 export default function DoctorProfilePage() {
   const [specialty, setSpecialty] = useState('')
   const [city, setCity] = useState('')
+  const [licenseNumber, setLicenseNumber] = useState('')
+  const [experienceYears, setExperienceYears] = useState(0)
+  const [languages, setLanguages] = useState<string[]>([])
   const [licenseFile, setLicenseFile] = useState<File | null>(null)
   const [loading, setLoading] = useState(false)
   const [uploading, setUploading] = useState(false)
@@ -17,6 +20,9 @@ export default function DoctorProfilePage() {
     id: string
     specialty: string
     city: string
+    license_number?: string
+    experience_years: number
+    languages: string[]
     verified_badge: boolean
     license_url?: string
   } | null>(null)
@@ -48,6 +54,9 @@ export default function DoctorProfilePage() {
             setDoctorProfile(profile)
             setSpecialty(profile.specialty || '')
             setCity(profile.city || '')
+            setLicenseNumber(profile.license_number || '')
+            setExperienceYears(profile.experience_years || 0)
+            setLanguages(profile.languages || [])
           }
         }
       } catch (error) {
@@ -75,6 +84,9 @@ export default function DoctorProfilePage() {
           user_id: user.id,
           specialty,
           city,
+          license_number: licenseNumber,
+          experience_years: experienceYears,
+          languages,
         }),
       })
 
@@ -236,6 +248,61 @@ export default function DoctorProfilePage() {
                   </option>
                 ))}
               </select>
+            </div>
+            
+            <div>
+              <label htmlFor="license_number" className="block text-sm font-medium text-gray-700 mb-1">
+                License Number
+              </label>
+              <input
+                id="license_number"
+                type="text"
+                value={licenseNumber}
+                onChange={(e) => setLicenseNumber(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                placeholder="Enter your license number"
+              />
+            </div>
+            
+            <div>
+              <label htmlFor="experience_years" className="block text-sm font-medium text-gray-700 mb-1">
+                Years of Experience
+              </label>
+              <input
+                id="experience_years"
+                type="number"
+                min="0"
+                max="50"
+                value={experienceYears}
+                onChange={(e) => setExperienceYears(parseInt(e.target.value) || 0)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                placeholder="0"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Languages Spoken
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                {['English', 'Hindi', 'Tamil', 'Telugu', 'Bengali', 'Marathi', 'Gujarati', 'Kannada'].map((lang) => (
+                  <label key={lang} className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={languages.includes(lang)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setLanguages([...languages, lang])
+                        } else {
+                          setLanguages(languages.filter(l => l !== lang))
+                        }
+                      }}
+                      className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                    />
+                    <span className="ml-2 text-sm text-gray-700">{lang}</span>
+                  </label>
+                ))}
+              </div>
             </div>
             
             <button

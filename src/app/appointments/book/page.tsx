@@ -10,16 +10,20 @@ interface Doctor {
   id: string
   specialty: string
   city: string
-  user: {
+  experience_years: number
+  languages: string[]
+  user?: {
     name: string
-    email: string
-  }
+    phone: string
+  } | null
 }
 
 export default function BookAppointmentPage() {
   const [doctor, setDoctor] = useState<Doctor | null>(null)
   const [selectedDate, setSelectedDate] = useState('')
   const [selectedTime, setSelectedTime] = useState('')
+  const [mode, setMode] = useState<'online' | 'offline'>('online')
+  const [reason, setReason] = useState('')
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
   
@@ -86,6 +90,8 @@ export default function BookAppointmentPage() {
           citizen_id: user.id,
           doctor_id: doctor.id,
           scheduled_at: scheduledAt.toISOString(),
+          mode,
+          reason,
         }),
       })
 
@@ -154,7 +160,7 @@ export default function BookAppointmentPage() {
             Book Appointment
           </h1>
           <p className="text-lg text-gray-600">
-            Schedule a consultation with Dr. {doctor.user.name}
+            Schedule a consultation with Dr. {doctor.user?.name || 'Doctor'}
           </p>
         </div>
 
@@ -175,8 +181,8 @@ export default function BookAppointmentPage() {
               <div className="flex items-center">
                 <User className="h-5 w-5 text-gray-400 mr-3" />
                 <div>
-                  <p className="font-medium text-gray-900">Dr. {doctor.user.name}</p>
-                  <p className="text-sm text-gray-600">{doctor.user.email}</p>
+                  <p className="font-medium text-gray-900">Dr. {doctor.user?.name || 'Doctor'}</p>
+                  <p className="text-sm text-gray-600">{doctor.user?.phone || 'Phone not available'}</p>
                 </div>
               </div>
               
@@ -195,6 +201,24 @@ export default function BookAppointmentPage() {
                   <p className="text-sm text-gray-600">Location</p>
                 </div>
               </div>
+              
+              <div className="flex items-center">
+                <Clock className="h-5 w-5 text-gray-400 mr-3" />
+                <div>
+                  <p className="font-medium text-gray-900">{doctor.experience_years} years</p>
+                  <p className="text-sm text-gray-600">Experience</p>
+                </div>
+              </div>
+              
+              {doctor.languages.length > 0 && (
+                <div className="flex items-start">
+                  <User className="h-5 w-5 text-gray-400 mr-3 mt-1" />
+                  <div>
+                    <p className="font-medium text-gray-900">{doctor.languages.join(', ')}</p>
+                    <p className="text-sm text-gray-600">Languages</p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -240,15 +264,62 @@ export default function BookAppointmentPage() {
                 </select>
               </div>
               
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Consultation Mode *
+                </label>
+                <div className="space-y-2">
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      name="mode"
+                      value="online"
+                      checked={mode === 'online'}
+                      onChange={(e) => setMode(e.target.value as 'online')}
+                      className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300"
+                    />
+                    <span className="ml-2 text-sm text-gray-700">Online (Video Call)</span>
+                  </label>
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      name="mode"
+                      value="offline"
+                      checked={mode === 'offline'}
+                      onChange={(e) => setMode(e.target.value as 'offline')}
+                      className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300"
+                    />
+                    <span className="ml-2 text-sm text-gray-700">In-Person Visit</span>
+                  </label>
+                </div>
+              </div>
+              
+              <div>
+                <label htmlFor="reason" className="block text-sm font-medium text-gray-700 mb-1">
+                  Reason for Visit (Optional)
+                </label>
+                <textarea
+                  id="reason"
+                  value={reason}
+                  onChange={(e) => setReason(e.target.value)}
+                  rows={3}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  placeholder="Brief description of your health concern..."
+                />
+              </div>
+              
               <div className="bg-blue-50 p-4 rounded-lg">
                 <div className="flex items-center">
                   <Clock className="h-5 w-5 text-blue-600 mr-2" />
                   <p className="text-sm text-blue-800 font-medium">
-                    Video Consultation
+                    {mode === 'online' ? 'Video Consultation' : 'In-Person Visit'}
                   </p>
                 </div>
                 <p className="text-sm text-blue-700 mt-1">
-                  You&apos;ll receive a video call link after booking confirmation.
+                  {mode === 'online' 
+                    ? "You'll receive a video call link after booking confirmation."
+                    : "Please visit the doctor's clinic at the scheduled time."
+                  }
                 </p>
               </div>
               

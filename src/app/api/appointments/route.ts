@@ -13,8 +13,14 @@ export async function GET(request: NextRequest) {
     
     const supabase = await createServerComponentClient()
     
-    // Get appointments for both citizen and doctor
-    const { data, error } = await supabase
+    // First get the doctor_id if the user is a doctor
+    const { data: doctorData } = await supabase
+      .from('doctors')
+      .select('id')
+      .eq('user_id', user_id)
+      .single()
+    
+    let query = supabase
       .from('appointments')
       .select(`
         *,
@@ -22,18 +28,29 @@ export async function GET(request: NextRequest) {
           id,
           specialty,
           city,
+          experience_years,
+          languages,
           user:users!user_id (
             name,
-            email
+            phone
           )
         ),
         citizen:users!citizen_id (
           name,
-          email
+          phone
         )
       `)
-      .or(`citizen_id.eq.${user_id},doctor_id.in.(select id from doctors where user_id = '${user_id}')`)
-      .order('scheduled_at', { ascending: false })
+    
+    // Build the query based on user role
+    if (doctorData) {
+      // User is a doctor, show appointments where they are the doctor OR citizen
+      query = query.or(`citizen_id.eq.${user_id},doctor_id.eq.${doctorData.id}`)
+    } else {
+      // User is a citizen, show only their appointments
+      query = query.eq('citizen_id', user_id)
+    }
+    
+    const { data, error } = await query.order('scheduled_at', { ascending: false })
     
     if (error) {
       console.error('Error fetching appointments:', error)
@@ -51,7 +68,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { citizen_id, doctor_id, scheduled_at } = body
+    const { citizen_id, doctor_id, scheduled_at, mode, reason } = body
     
     if (!citizen_id || !doctor_id || !scheduled_at) {
       return NextResponse.json(
@@ -72,6 +89,8 @@ export async function POST(request: NextRequest) {
         citizen_id,
         doctor_id,
         scheduled_at,
+        mode: mode || 'online',
+        reason,
         status: 'confirmed', // Auto-confirm for demo
         jitsi_room_id
       })
@@ -81,14 +100,16 @@ export async function POST(request: NextRequest) {
           id,
           specialty,
           city,
+          experience_years,
+          languages,
           user:users!user_id (
             name,
-            email
+            phone
           )
         ),
         citizen:users!citizen_id (
           name,
-          email
+          phone
         )
       `)
       .single()

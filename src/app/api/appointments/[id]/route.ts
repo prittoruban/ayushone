@@ -4,10 +4,10 @@ import { createServerComponentClient } from '@/lib/supabase-server'
 // GET /api/appointments/[id] - Get appointment details
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params
+    const { id } = await params
     
     const supabase = await createServerComponentClient()
     
@@ -19,14 +19,16 @@ export async function GET(
           id,
           specialty,
           city,
+          experience_years,
+          languages,
           user:users!user_id (
             name,
-            email
+            phone
           )
         ),
         citizen:users!citizen_id (
           name,
-          email
+          phone
         )
       `)
       .eq('id', id)

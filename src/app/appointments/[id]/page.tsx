@@ -15,14 +15,14 @@ interface Appointment {
     id: string
     specialty: string
     city: string
-    user: {
+    user?: {
       name: string
-      email: string
-    }
+      phone: string
+    } | null
   }
   citizen: {
     name: string
-    email: string
+    phone: string
   }
 }
 
@@ -193,7 +193,7 @@ export default function AppointmentDetailsPage({ params }: { params: { id: strin
               <div className="flex items-center">
                 <User className="h-5 w-5 text-gray-400 mr-3" />
                 <div>
-                  <p className="font-medium text-gray-900">Dr. {appointment.doctor.user.name}</p>
+                  <p className="font-medium text-gray-900">Dr. {appointment.doctor.user?.name || 'Doctor'}</p>
                   <p className="text-sm text-gray-600">Doctor</p>
                 </div>
               </div>

@@ -5,22 +5,22 @@ export interface Database {
         Row: {
           id: string
           name: string
-          email: string
           role: 'doctor' | 'citizen'
+          phone: string | null
           created_at: string
         }
         Insert: {
           id?: string
           name: string
-          email: string
           role: 'doctor' | 'citizen'
+          phone?: string | null
           created_at?: string
         }
         Update: {
           id?: string
           name?: string
-          email?: string
           role?: 'doctor' | 'citizen'
+          phone?: string | null
           created_at?: string
         }
       }
@@ -30,8 +30,11 @@ export interface Database {
           user_id: string
           specialty: string
           city: string
-          verified_badge: boolean
+          license_number: string | null
           license_url: string | null
+          experience_years: number
+          languages: string[]
+          verified_badge: boolean
           created_at: string
         }
         Insert: {
@@ -39,8 +42,11 @@ export interface Database {
           user_id: string
           specialty: string
           city: string
-          verified_badge?: boolean
+          license_number?: string | null
           license_url?: string | null
+          experience_years?: number
+          languages?: string[]
+          verified_badge?: boolean
           created_at?: string
         }
         Update: {
@@ -48,8 +54,11 @@ export interface Database {
           user_id?: string
           specialty?: string
           city?: string
-          verified_badge?: boolean
+          license_number?: string | null
           license_url?: string | null
+          experience_years?: number
+          languages?: string[]
+          verified_badge?: boolean
           created_at?: string
         }
       }
@@ -59,6 +68,8 @@ export interface Database {
           citizen_id: string
           doctor_id: string
           scheduled_at: string
+          mode: 'online' | 'offline'
+          reason: string | null
           status: 'pending' | 'confirmed' | 'completed' | 'cancelled'
           jitsi_room_id: string | null
           created_at: string
@@ -68,6 +79,8 @@ export interface Database {
           citizen_id: string
           doctor_id: string
           scheduled_at: string
+          mode?: 'online' | 'offline'
+          reason?: string | null
           status?: 'pending' | 'confirmed' | 'completed' | 'cancelled'
           jitsi_room_id?: string | null
           created_at?: string
@@ -77,6 +90,8 @@ export interface Database {
           citizen_id?: string
           doctor_id?: string
           scheduled_at?: string
+          mode?: 'online' | 'offline'
+          reason?: string | null
           status?: 'pending' | 'confirmed' | 'completed' | 'cancelled'
           jitsi_room_id?: string | null
           created_at?: string

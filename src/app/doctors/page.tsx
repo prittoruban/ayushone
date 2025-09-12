@@ -10,13 +10,15 @@ interface Doctor {
   id: string
   specialty: string
   city: string
+  experience_years: number
+  languages: string[]
   verified_badge: boolean
-  user: {
+  user?: {
     id: string
     name: string
-    email: string
     role: string
-  }
+    phone: string
+  } | null
 }
 
 export default function DoctorsPage() {
@@ -197,16 +199,24 @@ export default function DoctorsPage() {
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                      Dr. {doctor.user.name}
+                      Dr. {doctor.user?.name || 'Name not available'}
                     </h3>
                     <div className="flex items-center text-sm text-gray-600 mb-2">
                       <Award className="h-4 w-4 mr-1" />
                       <span>{doctor.specialty}</span>
                     </div>
-                    <div className="flex items-center text-sm text-gray-600">
+                    <div className="flex items-center text-sm text-gray-600 mb-2">
                       <MapPin className="h-4 w-4 mr-1" />
                       <span>{doctor.city}</span>
                     </div>
+                    <div className="text-sm text-gray-600 mb-2">
+                      <span>{doctor.experience_years} years experience</span>
+                    </div>
+                    {doctor.languages && doctor.languages.length > 0 && (
+                      <div className="text-sm text-gray-600">
+                        <span>Languages: {doctor.languages.slice(0, 2).join(', ')}{doctor.languages.length > 2 ? '...' : ''}</span>
+                      </div>
+                    )}
                   </div>
                   {doctor.verified_badge && (
                     <div className="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded-full">

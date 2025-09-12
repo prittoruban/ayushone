@@ -16,14 +16,17 @@ export async function GET(request: NextRequest) {
         id,
         specialty,
         city,
-        verified_badge,
+        license_number,
         license_url,
+        experience_years,
+        languages,
+        verified_badge,
         created_at,
         user:users!user_id (
           id,
           name,
-          email,
-          role
+          role,
+          phone
         )
       `)
       .eq('verified_badge', true)
@@ -54,7 +57,14 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { specialty, city, user_id } = body
+    const { 
+      specialty, 
+      city, 
+      user_id, 
+      license_number, 
+      experience_years, 
+      languages 
+    } = body
     
     if (!specialty || !city || !user_id) {
       return NextResponse.json(
@@ -78,7 +88,13 @@ export async function POST(request: NextRequest) {
       // Update existing profile
       result = await supabase
         .from('doctors')
-        .update({ specialty, city })
+        .update({ 
+          specialty, 
+          city,
+          license_number,
+          experience_years: experience_years || 0,
+          languages: languages || []
+        })
         .eq('user_id', user_id)
         .select()
         .single()
@@ -89,7 +105,10 @@ export async function POST(request: NextRequest) {
         .insert({ 
           user_id, 
           specialty, 
-          city, 
+          city,
+          license_number,
+          experience_years: experience_years || 0,
+          languages: languages || [],
           verified_badge: false // Will be set to true after license upload
         })
         .select()

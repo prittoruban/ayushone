@@ -10,6 +10,7 @@ export default function SignUpPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
+  const [phone, setPhone] = useState('')
   const [role, setRole] = useState<'doctor' | 'citizen'>('citizen')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -23,7 +24,7 @@ export default function SignUpPage() {
     setError('')
 
     try {
-      const { error } = await signUp(email, password, { name, role })
+      const { error } = await signUp(email, password, { name, role, phone })
       
       if (error) {
         setError(typeof error === 'string' ? error : 'Failed to create account')
@@ -98,6 +99,21 @@ export default function SignUpPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
                   placeholder="Enter your email address"
+                />
+              </div>
+              
+              <div>
+                <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+                  Phone Number (Optional)
+                </label>
+                <input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
+                  placeholder="Enter your phone number"
                 />
               </div>
               

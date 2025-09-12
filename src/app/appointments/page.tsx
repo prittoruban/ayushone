@@ -10,20 +10,24 @@ import { Calendar, Clock, User, Video, Award } from 'lucide-react'
 interface Appointment {
   id: string
   scheduled_at: string
+  mode: 'online' | 'offline'
+  reason?: string
   status: string
   jitsi_room_id: string
   doctor?: {
     id: string
     specialty: string
     city: string
+    experience_years: number
+    languages: string[]
     user: {
       name: string
-      email: string
+      phone: string
     }
   }
   citizen?: {
     name: string
-    email: string
+    phone: string
   }
 }
 
@@ -182,7 +186,7 @@ export default function AppointmentsPage() {
                           <h3 className="text-lg font-semibold text-gray-900">
                             {userProfile?.role === 'doctor' 
                               ? appointment.citizen?.name 
-                              : `Dr. ${appointment.doctor?.user.name}`
+                              : `Dr. ${appointment.doctor?.user?.name || 'Doctor'}`
                             }
                           </h3>
                           {appointment.doctor && (
@@ -207,7 +211,17 @@ export default function AppointmentsPage() {
                         <Clock className="h-4 w-4 mr-2" />
                         <span>{formatTime(appointment.scheduled_at)}</span>
                       </div>
+                      <div className="flex items-center">
+                        <Video className="h-4 w-4 mr-2" />
+                        <span>{appointment.mode === 'online' ? 'Online' : 'In-Person'}</span>
+                      </div>
                     </div>
+                    
+                    {appointment.reason && (
+                      <div className="mt-2 text-sm text-gray-600">
+                        <span className="font-medium">Reason:</span> {appointment.reason}
+                      </div>
+                    )}
                   </div>
                   
                   <div className="flex items-center space-x-3">
@@ -219,7 +233,7 @@ export default function AppointmentsPage() {
                       <span>Details</span>
                     </Link>
                     
-                    {isUpcoming(appointment.scheduled_at) && appointment.status === 'confirmed' && (
+                    {isUpcoming(appointment.scheduled_at) && appointment.status === 'confirmed' && appointment.mode === 'online' && (
                       <Link
                         href={`/appointments/${appointment.id}`}
                         className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center space-x-2"
