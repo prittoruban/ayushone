@@ -6,6 +6,7 @@ const config: Config = {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       fontFamily: {
@@ -14,8 +15,25 @@ const config: Config = {
         'mono': ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas'],
       },
       colors: {
+        // CSS Custom Property-based semantic tokens
+        background: 'rgb(var(--background) / <alpha-value>)',
+        foreground: 'rgb(var(--foreground) / <alpha-value>)',
+        card: {
+          DEFAULT: 'rgb(var(--card) / <alpha-value>)',
+          foreground: 'rgb(var(--card-foreground) / <alpha-value>)',
+        },
+        muted: {
+          DEFAULT: 'rgb(var(--muted) / <alpha-value>)',
+          foreground: 'rgb(var(--muted-foreground) / <alpha-value>)',
+        },
+        border: 'rgb(var(--border) / <alpha-value>)',
+        input: 'rgb(var(--input) / <alpha-value>)',
+        ring: 'rgb(var(--ring) / <alpha-value>)',
+        
         // Balanced healthcare colors - calming yet professional
         primary: {
+          DEFAULT: 'rgb(var(--primary) / <alpha-value>)',
+          foreground: 'rgb(var(--primary-foreground) / <alpha-value>)',
           50: '#f0f9ff',
           100: '#e0f2fe',
           200: '#bae6fd',
@@ -29,6 +47,8 @@ const config: Config = {
           950: '#082f49',
         },
         secondary: {
+          DEFAULT: 'rgb(var(--secondary) / <alpha-value>)',
+          foreground: 'rgb(var(--secondary-foreground) / <alpha-value>)',
           50: '#f8fafc',
           100: '#f1f5f9',
           200: '#e2e8f0',
@@ -42,6 +62,8 @@ const config: Config = {
           950: '#020617',
         },
         accent: {
+          DEFAULT: 'rgb(var(--accent) / <alpha-value>)',
+          foreground: 'rgb(var(--accent-foreground) / <alpha-value>)',
           50: '#fdf4ff',
           100: '#fae8ff',
           200: '#f5d0fe',
@@ -53,6 +75,10 @@ const config: Config = {
           800: '#86198f',
           900: '#701a75',
           950: '#4a044e',
+        },
+        destructive: {
+          DEFAULT: 'rgb(var(--destructive) / <alpha-value>)',
+          foreground: 'rgb(var(--destructive-foreground) / <alpha-value>)',
         },
         therapeutic: {
           50: '#f0fdf4',

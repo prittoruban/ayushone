@@ -13,9 +13,9 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
     <div
       ref={ref}
       className={cn(
-        'rounded-2xl bg-white shadow-soft border border-secondary-200/50',
+        'rounded-2xl bg-white dark:bg-slate-800 shadow-soft border border-secondary-200/50 dark:border-secondary-700/50',
         hover && 'card-hover cursor-pointer',
-        gradient && 'bg-gradient-to-br from-white to-secondary-50',
+        gradient && 'bg-gradient-to-br from-white to-secondary-50 dark:from-slate-800 dark:to-slate-700/50',
         className
       )}
       {...props}
@@ -41,7 +41,7 @@ const CardTitle = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HT
   ({ className, children, ...props }, ref) => (
     <h3
       ref={ref}
-      className={cn('text-xl font-semibold leading-none tracking-tight text-secondary-900', className)}
+      className={cn('text-xl font-semibold leading-none tracking-tight text-secondary-900 dark:text-slate-100', className)}
       {...props}
     >
       {children}
@@ -54,7 +54,7 @@ const CardDescription = React.forwardRef<HTMLParagraphElement, React.HTMLAttribu
   ({ className, ...props }, ref) => (
     <p
       ref={ref}
-      className={cn('text-sm text-secondary-600', className)}
+      className={cn('text-sm text-secondary-600 dark:text-slate-400', className)}
       {...props}
     />
   )

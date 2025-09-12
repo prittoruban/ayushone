@@ -42,7 +42,7 @@ export default function Navbar() {
 
   if (loading) {
     return (
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-secondary-200/50 shadow-soft">
+      <nav className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg border-b border-secondary-200/50 dark:border-slate-700/50 shadow-soft">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
@@ -52,7 +52,7 @@ export default function Navbar() {
               <span className="text-xl font-bold gradient-text">AYUSH ONE</span>
             </div>
             <div className="flex items-center">
-              <LoadingSpinner size="sm" />
+              <LoadingSpinner size="sm" className="text-muted-foreground" />
             </div>
           </div>
         </div>
@@ -61,7 +61,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-secondary-200/50 shadow-soft">
+    <nav className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg border-b border-secondary-200/50 dark:border-slate-700/50 shadow-soft">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -77,7 +77,7 @@ export default function Navbar() {
             </div>
             <div className="hidden sm:block">
               <span className="text-xl font-bold gradient-text">AYUSH ONE</span>
-              <p className="text-xs text-secondary-600 -mt-1">Healthcare Platform</p>
+              <p className="text-xs text-muted-foreground -mt-1">Healthcare Platform</p>
             </div>
           </Link>
 
@@ -87,7 +87,7 @@ export default function Navbar() {
               <Link
                 key={item.name}
                 href={item.href}
-                className="flex items-center space-x-2 px-4 py-2 rounded-xl text-secondary-600 hover:text-secondary-900 hover:bg-secondary-50 transition-all duration-200 group"
+                className="flex items-center space-x-2 px-4 py-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary-50 dark:hover:bg-secondary-800 transition-all duration-200 group"
               >
                 <item.icon className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
                 <span className="font-medium">{item.name}</span>
@@ -101,34 +101,34 @@ export default function Navbar() {
               <div className="relative">
                 <button
                   onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-                  className="flex items-center space-x-3 p-2 rounded-xl bg-secondary-50 hover:bg-secondary-100 transition-all duration-200 group"
+                  className="flex items-center space-x-3 p-2 rounded-xl bg-secondary-50 dark:bg-secondary-800 hover:bg-secondary-100 dark:hover:bg-secondary-700 transition-all duration-200 group"
                 >
                   <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg flex items-center justify-center text-white font-medium text-sm">
                     {userProfile.name.charAt(0).toUpperCase()}
                   </div>
                   <div className="hidden sm:block text-left">
-                    <p className="text-sm font-medium text-secondary-900">{userProfile.name}</p>
+                    <p className="text-sm font-medium text-foreground">{userProfile.name}</p>
                     <div className="flex items-center space-x-2">
                       <Badge variant={userProfile.role === 'doctor' ? 'info' : 'success'} size="sm">
                         {userProfile.role === 'doctor' ? 'Doctor' : 'Patient'}
                       </Badge>
                     </div>
                   </div>
-                  <ChevronDown className="w-4 h-4 text-secondary-400 group-hover:text-secondary-600 transition-colors duration-200" />
+                  <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors duration-200" />
                 </button>
 
                 {/* Profile Dropdown */}
                 {isProfileMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-large border border-secondary-200/50 py-2 animate-fade-in-down">
-                    <div className="px-4 py-3 border-b border-secondary-100">
-                      <p className="text-sm font-medium text-secondary-900">{userProfile.name}</p>
-                      <p className="text-xs text-secondary-500">{userProfile.phone || 'No phone number'}</p>
+                  <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-card rounded-2xl shadow-large border border-secondary-200/50 dark:border-secondary-700/50 py-2 animate-fade-in-down">
+                    <div className="px-4 py-3 border-b border-secondary-100 dark:border-secondary-700">
+                      <p className="text-sm font-medium text-foreground">{userProfile.name}</p>
+                      <p className="text-xs text-muted-foreground">{userProfile.phone || 'No phone number'}</p>
                     </div>
                     
                     {userProfile.role === 'doctor' && (
                       <Link
                         href="/doctor/profile"
-                        className="flex items-center space-x-3 px-4 py-3 text-sm text-secondary-700 hover:bg-secondary-50 transition-colors duration-200"
+                        className="flex items-center space-x-3 px-4 py-3 text-sm text-muted-foreground hover:bg-secondary-50 dark:hover:bg-secondary-800 transition-colors duration-200"
                         onClick={() => setIsProfileMenuOpen(false)}
                       >
                         <Settings className="w-4 h-4" />
@@ -138,7 +138,7 @@ export default function Navbar() {
                     
                     <Link
                       href="/appointments"
-                      className="flex items-center space-x-3 px-4 py-3 text-sm text-secondary-700 hover:bg-secondary-50 transition-colors duration-200"
+                      className="flex items-center space-x-3 px-4 py-3 text-sm text-muted-foreground hover:bg-secondary-50 dark:hover:bg-secondary-800 transition-colors duration-200"
                       onClick={() => setIsProfileMenuOpen(false)}
                     >
                       <Calendar className="w-4 h-4" />
@@ -147,7 +147,7 @@ export default function Navbar() {
                     
                     <button
                       onClick={handleSignOut}
-                      className="flex items-center space-x-3 px-4 py-3 text-sm text-error-600 hover:bg-error-50 transition-colors duration-200 w-full text-left"
+                      className="flex items-center space-x-3 px-4 py-3 text-sm text-error-600 dark:text-error-400 hover:bg-error-50 dark:hover:bg-error-950 transition-colors duration-200 w-full text-left"
                     >
                       <LogOut className="w-4 h-4" />
                       <span>Sign Out</span>
@@ -173,7 +173,7 @@ export default function Navbar() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 rounded-xl text-secondary-600 hover:text-secondary-900 hover:bg-secondary-50 transition-all duration-200"
+              className="md:hidden p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary-50 dark:hover:bg-secondary-800 transition-all duration-200"
             >
               {isMobileMenuOpen ? (
                 <X className="w-5 h-5" />
@@ -186,13 +186,13 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-secondary-200/50 animate-fade-in-down">
+          <div className="md:hidden py-4 border-t border-secondary-200/50 dark:border-secondary-700/50 animate-fade-in-down">
             <div className="space-y-2">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="flex items-center space-x-3 px-4 py-3 rounded-xl text-secondary-600 hover:text-secondary-900 hover:bg-secondary-50 transition-all duration-200"
+                  className="flex items-center space-x-3 px-4 py-3 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary-50 dark:hover:bg-secondary-800 transition-all duration-200"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   <item.icon className="w-5 h-5" />

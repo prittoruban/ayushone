@@ -1,26 +1,66 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #0f172a;
-  --muted: #f8fafc;
-  --muted-foreground: #64748b;
-  --border: #e2e8f0;
-  --input: #ffffff;
-  --ring: #0ea5e9;
+  /* Light mode colors */
+  --background: 255 255 255;
+  --foreground: 15 23 42;
+  --muted: 248 250 252;
+  --muted-foreground: 100 116 139;
+  --border: 226 232 240;
+  --input: 255 255 255;
+  --ring: 14 165 233;
   --radius: 0.75rem;
+  
+  /* Card colors */
+  --card: 255 255 255;
+  --card-foreground: 15 23 42;
+  
+  /* Primary colors */
+  --primary: 14 165 233;
+  --primary-foreground: 255 255 255;
+  
+  /* Secondary colors */
+  --secondary: 248 250 252;
+  --secondary-foreground: 15 23 42;
+  
+  /* Accent colors */
+  --accent: 248 250 252;
+  --accent-foreground: 15 23 42;
+  
+  /* Destructive colors */
+  --destructive: 239 68 68;
+  --destructive-foreground: 255 255 255;
 }
 
-/* Force light mode colors to ensure visibility */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #ffffff;
-    --foreground: #0f172a;
-    --muted: #f8fafc;
-    --muted-foreground: #64748b;
-    --border: #e2e8f0;
-    --input: #ffffff;
-  }
+.dark {
+  /* Dark mode colors */
+  --background: 2 6 23;
+  --foreground: 248 250 252;
+  --muted: 15 23 42;
+  --muted-foreground: 148 163 184;
+  --border: 30 41 59;
+  --input: 15 23 42;
+  --ring: 14 165 233;
+  
+  /* Card colors */
+  --card: 15 23 42;
+  --card-foreground: 248 250 252;
+  
+  /* Primary colors */
+  --primary: 14 165 233;
+  --primary-foreground: 255 255 255;
+  
+  /* Secondary colors */
+  --secondary: 30 41 59;
+  --secondary-foreground: 248 250 252;
+  
+  /* Accent colors */
+  --accent: 30 41 59;
+  --accent-foreground: 248 250 252;
+  
+  /* Destructive colors */
+  --destructive: 239 68 68;
+  --destructive-foreground: 255 255 255;
 }
 
 * {
@@ -33,131 +73,19 @@ html {
 
 body {
   font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-  background: var(--background);
-  color: #0f172a !important; /* Force dark text color */
+  background-color: rgb(var(--background));
+  color: rgb(var(--foreground));
   margin: 0;
   padding: 0;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-}
-
-/* Force text visibility globally */
-* {
-  color: inherit;
-}
-
-/* Ensure all text elements are visible */
-h1, h2, h3, h4, h5, h6, p, span, div, a, button, input, textarea, label {
-  color: #0f172a !important;
-}
-
-/* Card-specific text visibility */
-[class*="Card"] h1, [class*="Card"] h2, [class*="Card"] h3, 
-[class*="Card"] h4, [class*="Card"] h5, [class*="Card"] h6, 
-[class*="Card"] p, [class*="Card"] span {
-  color: #0f172a !important;
-}
-
-/* Direct card content overrides */
-.rounded-2xl h1, .rounded-2xl h2, .rounded-2xl h3,
-.rounded-2xl h4, .rounded-2xl h5, .rounded-2xl h6,
-.rounded-2xl p, .rounded-2xl span, .rounded-2xl div {
-  color: #0f172a !important;
-}
-
-/* Specific overrides for card titles and descriptions */
-.text-secondary-900, .text-secondary-600 {
-  color: #0f172a !important;
-}
-
-/* Card content with padding overrides */
-.p-6 h1, .p-6 h2, .p-6 h3, .p-6 h4, .p-6 h5, .p-6 h6,
-.p-6 p, .p-6 span, .p-6 div {
-  color: #0f172a !important;
-}
-
-.p-8 h1, .p-8 h2, .p-8 h3, .p-8 h4, .p-8 h5, .p-8 h6,
-.p-8 p, .p-8 span, .p-8 div {
-  color: #0f172a !important;
-}
-
-/* Section-specific text visibility */
-section h1, section h2, section h3, section h4, section h5, section h6,
-section p, section span, section div {
-  color: #0f172a !important;
-}
-
-/* Tailwind text color overrides */
-.text-secondary-900 { color: #0f172a !important; }
-.text-secondary-800 { color: #1e293b !important; }
-.text-secondary-700 { color: #334155 !important; }
-.text-secondary-600 { color: #475569 !important; }
-.text-secondary-500 { color: #64748b !important; }
-.text-secondary-400 { color: #94a3b8 !important; }
-.text-primary-600 { color: #0284c7 !important; }
-.text-primary-500 { color: #0ea5e9 !important; }
-
-/* Card content overrides */
-.bg-white h3, .bg-white p, .bg-white span {
-  color: #0f172a !important;
-}
-
-/* Gradient background overrides */
-.bg-gradient-to-br h2, .bg-gradient-to-br h3, .bg-gradient-to-br p {
-  color: #0f172a !important;
-}
-
-.bg-gradient-to-br.from-primary-50 h2, 
-.bg-gradient-to-br.from-primary-50 h3, 
-.bg-gradient-to-br.from-primary-50 p {
-  color: #0f172a !important;
-}
-
-/* Gradient card specific overrides */
-.bg-gradient-to-br.from-white h1, .bg-gradient-to-br.from-white h2, .bg-gradient-to-br.from-white h3,
-.bg-gradient-to-br.from-white h4, .bg-gradient-to-br.from-white h5, .bg-gradient-to-br.from-white h6,
-.bg-gradient-to-br.from-white p, .bg-gradient-to-br.from-white span, .bg-gradient-to-br.from-white div {
-  color: #0f172a !important;
-}
-
-/* Any element with gradient background */
-[class*="bg-gradient-"] * {
-  color: #0f172a !important;
-}
-
-/* Nuclear option - force all text to be visible */
-main *, section *, article *, div * {
-  color: #0f172a !important;
-}
-
-/* Override the nuclear option for elements that should be white */
-.bg-primary-500 *, .bg-primary-600 *, .bg-accent-500 *, .bg-accent-600 *, 
-.bg-secondary-800 *, .bg-secondary-900 *, .bg-therapeutic-500 *, .bg-therapeutic-600 *,
-.bg-gradient-to-r *, footer * {
-  color: white !important;
-}
-
-/* Footer text overrides */
-.bg-secondary-900 .text-secondary-400 {
-  color: #94a3b8 !important;
-}
-
-.bg-secondary-900 span:not(.gradient-text) {
-  color: white !important;
-}
-
-/* Allow white text only on colored backgrounds */
-.bg-primary-500 *, .bg-primary-600 *, .bg-accent-500 *, .bg-accent-600 *, 
-.bg-secondary-800 *, .bg-secondary-900 *, .bg-therapeutic-500 *, .bg-therapeutic-600 *,
-.bg-gradient-to-r *, .bg-gradient-to-br *, .bg-gradient-to-b * {
-  color: white !important;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Professional gradient text utility */
 .gradient-text {
-  color: #0ea5e9 !important; /* Always show blue as fallback */
   background: linear-gradient(135deg, #0ea5e9 0%, #d946ef 100%);
   -webkit-background-clip: text;
   background-clip: text;
@@ -167,9 +95,9 @@ main *, section *, article *, div * {
 /* Ensure text visibility on webkit browsers */
 @supports not (-webkit-background-clip: text) {
   .gradient-text {
-    color: #0ea5e9 !important;
-    background: none !important;
-    -webkit-text-fill-color: inherit !important;
+    color: #0ea5e9;
+    background: none;
+    -webkit-text-fill-color: inherit;
   }
 }
 
@@ -182,12 +110,24 @@ main *, section *, article *, div * {
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 }
 
+.dark .glass {
+  background: rgba(15, 23, 42, 0.2);
+  border: 1px solid rgba(248, 250, 252, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
 .glass-strong {
   background: rgba(255, 255, 255, 0.25);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.5);
+}
+
+.dark .glass-strong {
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px solid rgba(248, 250, 252, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
 }
 
 /* Card hover effect */
@@ -200,6 +140,11 @@ main *, section *, article *, div * {
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
+/* Dark mode card hover */
+.dark .card-hover:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+}
+
 /* Custom scrollbar for webkit browsers */
 ::-webkit-scrollbar {
   width: 8px;
@@ -207,42 +152,41 @@ main *, section *, article *, div * {
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
-  border-radius: 4px;
+  background: rgb(var(--muted));
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: rgb(var(--muted-foreground) / 0.5);
   border-radius: 4px;
   transition: background 0.2s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: rgb(var(--muted-foreground) / 0.7);
 }
 
 /* Focus ring improvements */
 .focus-ring {
   outline: 2px solid transparent;
   outline-offset: 2px;
-  box-shadow: 0 0 0 2px #0ea5e9;
+  box-shadow: 0 0 0 2px rgb(var(--ring));
 }
 
 /* Better focus visible styles */
 *:focus-visible {
-  outline: 2px solid #0ea5e9;
+  outline: 2px solid rgb(var(--ring));
   outline-offset: 2px;
 }
 
 /* Selection styles */
 ::selection {
-  background: #bae6fd;
-  color: #075985;
+  background: rgb(var(--primary) / 0.2);
+  color: rgb(var(--foreground));
 }
 
 ::-moz-selection {
-  background: #bae6fd;
-  color: #075985;
+  background: rgb(var(--primary) / 0.2);
+  color: rgb(var(--foreground));
 }
 
 /* Print styles */
@@ -272,6 +216,6 @@ main *, section *, article *, div * {
     -webkit-background-clip: unset;
     background-clip: unset;
     -webkit-text-fill-color: unset;
-    color: #0284c7;
+    color: rgb(var(--primary));
   }
 }

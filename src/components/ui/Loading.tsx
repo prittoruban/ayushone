@@ -54,7 +54,7 @@ const LoadingSkeleton: React.FC<LoadingSkeletonProps> = ({
   return (
     <div className={cn('space-y-2', className)}>
       {Array.from({ length: lines }).map((_, i) => (
-        <div key={i} className="h-4 bg-secondary-200 rounded skeleton" />
+        <div key={i} className="h-4 bg-secondary-200 dark:bg-secondary-700 rounded skeleton" />
       ))}
     </div>
   )
