@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, use } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { useRouter } from 'next/navigation'
 import Navbar from '@/components/Navbar'
@@ -26,7 +26,8 @@ interface Appointment {
   }
 }
 
-export default function AppointmentDetailsPage({ params }: { params: { id: string } }) {
+export default function AppointmentDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = use(params)
   const [appointment, setAppointment] = useState<Appointment | null>(null)
   const [loading, setLoading] = useState(true)
   const [message, setMessage] = useState('')
@@ -42,7 +43,7 @@ export default function AppointmentDetailsPage({ params }: { params: { id: strin
     
     const loadAppointment = async () => {
       try {
-        const response = await fetch(`/api/appointments/${params.id}`)
+        const response = await fetch(`/api/appointments/${resolvedParams.id}`)
         if (response.ok) {
           const data = await response.json()
           setAppointment(data)
@@ -58,7 +59,7 @@ export default function AppointmentDetailsPage({ params }: { params: { id: strin
     }
     
     loadAppointment()
-  }, [user, params.id, router])
+  }, [user, resolvedParams.id, router])
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
