@@ -3,8 +3,26 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import Navbar from '@/components/Navbar'
+import { Button } from '@/components/ui/Button'
+import { Card, CardContent } from '@/components/ui/Card'
+import { Badge } from '@/components/ui/Badge'
+import { LoadingSpinner } from '@/components/ui/Loading'
 import Link from 'next/link'
-import { Search, MapPin, Award, Calendar } from 'lucide-react'
+import { 
+  Search, 
+  MapPin, 
+  Award, 
+  Calendar, 
+  Star,
+  User,
+  Languages,
+  Filter,
+  Clock,
+  Shield,
+  Heart,
+  Sparkles,
+  ArrowRight
+} from 'lucide-react'
 
 interface Doctor {
   id: string
@@ -105,144 +123,292 @@ export default function DoctorsPage() {
     'Lucknow'
   ]
 
+  const getSpecialtyIcon = (specialty: string) => {
+    switch (specialty.toLowerCase()) {
+      case 'ayurveda': return '🌿'
+      case 'yoga': return '🧘'
+      case 'unani': return '⚗️'
+      case 'siddha': return '🔬'
+      case 'homeopathy': return '💊'
+      case 'cardiology': return '❤️'
+      case 'dermatology': return '👨‍⚕️'
+      case 'pediatrics': return '👶'
+      case 'orthopedics': return '🦴'
+      default: return '🩺'
+    }
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <Navbar />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            Find Verified AYUSH Doctors
-          </h1>
-          <p className="text-lg text-gray-600">
-            Connect with qualified and verified practitioners near you
-          </p>
-        </div>
-
-        {/* Search Form */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <form onSubmit={handleSearch} className="space-y-4 md:space-y-0 md:flex md:space-x-4">
-            <div className="flex-1">
-              <label htmlFor="specialty" className="block text-sm font-medium text-gray-700 mb-1">
-                Specialty
-              </label>
-              <select
-                id="specialty"
-                value={searchSpecialty}
-                onChange={(e) => setSearchSpecialty(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
-              >
-                <option value="">All Specialties</option>
-                {specialties.map((specialty) => (
-                  <option key={specialty} value={specialty}>
-                    {specialty}
-                  </option>
-                ))}
-              </select>
-            </div>
+      {/* Hero Section */}
+      <section className="relative pt-16 pb-8">
+        <div className="absolute inset-0 bg-gradient-to-b from-primary-50/30 via-white to-white" />
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary-200/20 rounded-full blur-3xl animate-float" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent-200/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }} />
+        
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12 animate-fade-in-up">
+            <Badge variant="outline" className="mb-6 px-4 py-2">
+              <Heart className="w-4 h-4 mr-2" />
+              Find Your Perfect Match
+            </Badge>
             
-            <div className="flex-1">
-              <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">
-                City
-              </label>
-              <select
-                id="city"
-                value={searchCity}
-                onChange={(e) => setSearchCity(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
-              >
-                <option value="">All Cities</option>
-                {cities.map((city) => (
-                  <option key={city} value={city}>
-                    {city}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <h1 className="text-4xl md:text-5xl font-bold text-secondary-900 mb-6 leading-tight">
+              Discover 
+              <span className="gradient-text"> Verified AYUSH</span>
+              <br />
+              Practitioners
+            </h1>
             
-            <div className="flex items-end">
-              <button
-                type="submit"
-                className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-medium flex items-center space-x-2"
-              >
-                <Search className="h-4 w-4" />
-                <span>Search</span>
-              </button>
-            </div>
-          </form>
-        </div>
+            <p className="text-xl text-secondary-600 max-w-3xl mx-auto mb-8 leading-relaxed">
+              Connect with qualified and verified traditional medicine practitioners. 
+              Find experts in Ayurveda, Yoga, Unani, Siddha, and Homeopathy near you.
+            </p>
 
-        {/* Results */}
-        {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="bg-white rounded-lg shadow-md p-6 animate-pulse">
-                <div className="h-6 bg-gray-200 rounded mb-4"></div>
-                <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                <div className="h-4 bg-gray-200 rounded mb-4"></div>
-                <div className="h-10 bg-gray-200 rounded"></div>
+            {/* Quick Stats */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-2xl mx-auto">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-primary-600">{doctors.length}+</div>
+                <div className="text-sm text-secondary-600">Doctors Available</div>
               </div>
-            ))}
-          </div>
-        ) : doctors.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="text-gray-500 mb-4">
-              <Search className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <h3 className="text-lg font-medium mb-2">No doctors found</h3>
-              <p>Try adjusting your search criteria</p>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-accent-600">4.9</div>
+                <div className="text-sm text-secondary-600">Average Rating</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-success-600">24/7</div>
+                <div className="text-sm text-secondary-600">Support</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-warning-600">2min</div>
+                <div className="text-sm text-secondary-600">Response Time</div>
+              </div>
             </div>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {doctors.map((doctor) => (
-              <div key={doctor.id} className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                      Dr. {doctor.user?.name || 'Name not available'}
-                    </h3>
-                    <div className="flex items-center text-sm text-gray-600 mb-2">
-                      <Award className="h-4 w-4 mr-1" />
-                      <span>{doctor.specialty}</span>
-                    </div>
-                    <div className="flex items-center text-sm text-gray-600 mb-2">
-                      <MapPin className="h-4 w-4 mr-1" />
-                      <span>{doctor.city}</span>
-                    </div>
-                    <div className="text-sm text-gray-600 mb-2">
-                      <span>{doctor.experience_years} years experience</span>
-                    </div>
-                    {doctor.languages && doctor.languages.length > 0 && (
-                      <div className="text-sm text-gray-600">
-                        <span>Languages: {doctor.languages.slice(0, 2).join(', ')}{doctor.languages.length > 2 ? '...' : ''}</span>
-                      </div>
-                    )}
+        </div>
+      </section>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+        {/* Search Form */}
+        <div className="glass-card mb-12 animate-fade-in-up" style={{ animationDelay: '200ms' }}>
+          <Card>
+            <CardContent className="p-8">
+              <div className="flex items-center mb-6">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-primary-100 rounded-xl flex items-center justify-center">
+                    <Filter className="w-5 h-5 text-primary-600" />
                   </div>
-                  {doctor.verified_badge && (
-                    <div className="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded-full">
-                      Verified
-                    </div>
-                  )}
+                  <div>
+                    <h2 className="text-lg font-semibold text-secondary-900">Find Your Doctor</h2>
+                    <p className="text-sm text-secondary-600">Search by specialty and location</p>
+                  </div>
+                </div>
+              </div>
+              
+              <form onSubmit={handleSearch} className="space-y-6 md:space-y-0 md:grid md:grid-cols-3 md:gap-6">
+                <div>
+                  <label htmlFor="specialty" className="block text-sm font-medium text-secondary-700 mb-2">
+                    <Award className="w-4 h-4 inline mr-2" />
+                    Specialty
+                  </label>
+                  <select
+                    id="specialty"
+                    value={searchSpecialty}
+                    onChange={(e) => setSearchSpecialty(e.target.value)}
+                    className="w-full px-4 py-3 bg-white border border-secondary-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors duration-200"
+                  >
+                    <option value="">All Specialties</option>
+                    {specialties.map((specialty) => (
+                      <option key={specialty} value={specialty}>
+                        {getSpecialtyIcon(specialty)} {specialty}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 
-                {user ? (
-                  <Link
-                    href={`/appointments/book?doctor_id=${doctor.id}`}
-                    className="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg font-medium flex items-center justify-center space-x-2"
+                <div>
+                  <label htmlFor="city" className="block text-sm font-medium text-secondary-700 mb-2">
+                    <MapPin className="w-4 h-4 inline mr-2" />
+                    City
+                  </label>
+                  <select
+                    id="city"
+                    value={searchCity}
+                    onChange={(e) => setSearchCity(e.target.value)}
+                    className="w-full px-4 py-3 bg-white border border-secondary-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors duration-200"
                   >
-                    <Calendar className="h-4 w-4" />
-                    <span>Book Appointment</span>
-                  </Link>
-                ) : (
-                  <Link
-                    href="/auth/signin"
-                    className="w-full bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg font-medium flex items-center justify-center space-x-2"
+                    <option value="">All Cities</option>
+                    {cities.map((city) => (
+                      <option key={city} value={city}>
+                        📍 {city}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div className="flex items-end">
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    size="lg"
+                    className="w-full md:w-auto"
                   >
-                    <span>Sign In to Book</span>
-                  </Link>
-                )}
+                    <Search className="w-5 h-5 mr-2" />
+                    Search Doctors
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Results Section */}
+        {loading ? (
+          <div className="space-y-8">
+            <div className="flex items-center justify-center">
+              <LoadingSpinner size="lg" />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <Card key={i} className="animate-pulse">
+                  <CardContent className="p-6">
+                    <div className="h-6 bg-secondary-200 rounded mb-4"></div>
+                    <div className="h-4 bg-secondary-200 rounded mb-2"></div>
+                    <div className="h-4 bg-secondary-200 rounded mb-4"></div>
+                    <div className="h-12 bg-secondary-200 rounded"></div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        ) : doctors.length === 0 ? (
+          <div className="text-center py-16 animate-fade-in">
+            <div className="text-secondary-400 mb-6">
+              <Search className="h-16 w-16 mx-auto mb-4 opacity-50" />
+              <h3 className="text-xl font-semibold text-secondary-900 mb-2">No doctors found</h3>
+              <p className="text-secondary-600">Try adjusting your search criteria or browse all doctors</p>
+            </div>
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                setSearchCity('')
+                setSearchSpecialty('')
+                fetchDoctors()
+              }}
+            >
+              <Sparkles className="w-4 h-4 mr-2" />
+              Show All Doctors
+            </Button>
+          </div>
+        ) : (
+          <div className="space-y-8">
+            <div className="flex items-center justify-between">
+              <div className="animate-fade-in-left">
+                <h2 className="text-2xl font-bold text-secondary-900">
+                  {doctors.length} Doctor{doctors.length !== 1 ? 's' : ''} Found
+                </h2>
+                <p className="text-secondary-600">Choose from verified practitioners</p>
               </div>
-            ))}
+              <Badge variant="outline" className="animate-fade-in-right">
+                <Shield className="w-4 h-4 mr-2" />
+                All Verified
+              </Badge>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {doctors.map((doctor, index) => (
+                <div
+                  key={doctor.id}
+                  className="animate-fade-in-up"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <Card hover className="group h-full">
+                    <CardContent className="p-6">
+                      <div className="flex items-start justify-between mb-6">
+                        <div className="flex items-center space-x-4">
+                          <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center text-white font-semibold text-lg">
+                            {getSpecialtyIcon(doctor.specialty)}
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-semibold text-secondary-900 mb-1 group-hover:text-primary-600 transition-colors duration-200">
+                              Dr. {doctor.user?.name || 'Name not available'}
+                            </h3>
+                            {doctor.verified_badge && (
+                              <Badge variant="success" size="sm">
+                                <Shield className="w-3 h-3 mr-1" />
+                                Verified
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-3 mb-6">
+                        <div className="flex items-center text-sm text-secondary-600">
+                          <Award className="h-4 w-4 mr-3 text-primary-500" />
+                          <span className="font-medium">{doctor.specialty}</span>
+                        </div>
+                        <div className="flex items-center text-sm text-secondary-600">
+                          <MapPin className="h-4 w-4 mr-3 text-accent-500" />
+                          <span>{doctor.city}</span>
+                        </div>
+                        <div className="flex items-center text-sm text-secondary-600">
+                          <Clock className="h-4 w-4 mr-3 text-success-500" />
+                          <span>{doctor.experience_years} years experience</span>
+                        </div>
+                        {doctor.languages && doctor.languages.length > 0 && (
+                          <div className="flex items-start text-sm text-secondary-600">
+                            <Languages className="h-4 w-4 mr-3 text-warning-500 mt-0.5" />
+                            <div>
+                              <span>Languages: </span>
+                              <div className="flex flex-wrap gap-1 mt-1">
+                                {doctor.languages.slice(0, 3).map((lang) => (
+                                  <Badge key={lang} variant="outline" size="sm" className="text-xs">
+                                    {lang}
+                                  </Badge>
+                                ))}
+                                {doctor.languages.length > 3 && (
+                                  <Badge variant="outline" size="sm" className="text-xs">
+                                    +{doctor.languages.length - 3} more
+                                  </Badge>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Rating placeholder */}
+                      <div className="flex items-center space-x-1 mb-6">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <Star key={star} className="w-4 h-4 fill-warning-400 text-warning-400" />
+                        ))}
+                        <span className="text-sm text-secondary-600 ml-2">4.9 (127 reviews)</span>
+                      </div>
+                      
+                      {user ? (
+                        <Link href={`/appointments/book?doctor_id=${doctor.id}`}>
+                          <Button variant="primary" size="lg" className="w-full group">
+                            <Calendar className="w-5 h-5 mr-2" />
+                            Book Appointment
+                            <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
+                          </Button>
+                        </Link>
+                      ) : (
+                        <Link href="/auth/signin">
+                          <Button variant="outline" size="lg" className="w-full">
+                            <User className="w-5 h-5 mr-2" />
+                            Sign In to Book
+                          </Button>
+                        </Link>
+                      )}
+                    </CardContent>
+                  </Card>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>

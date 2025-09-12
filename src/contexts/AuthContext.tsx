@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState, useCallback } from 'rea
 import { User } from '@supabase/supabase-js'
 import { createClientComponentClient } from '@/lib/supabase'
 import { User as AppUser } from '@/lib/database.types'
+import { useRouter } from 'next/navigation'
 
 interface AuthContextType {
   user: User | null
@@ -21,6 +22,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [userProfile, setUserProfile] = useState<AppUser | null>(null)
   const [loading, setLoading] = useState(true)
   const supabase = createClientComponentClient()
+  const router = useRouter()
 
   const fetchUserProfile = useCallback(async (userId: string) => {
     try {
@@ -107,9 +109,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = async () => {
     try {
-      await supabase.auth.signOut()
+      console.log('Attempting to sign out...')
+      const { error } = await supabase.auth.signOut()
+      
+      if (error) {
+        console.error('Sign out error:', error)
+        throw error
+      }
+      
+      console.log('Sign out successful')
+      
+      // Force clear local state
+      setUser(null)
+      setUserProfile(null)
+      
+      // Use Next.js router for navigation
+      router.push('/')
+      
     } catch (error) {
       console.error('Error signing out:', error)
+      throw error
     }
   }
 
