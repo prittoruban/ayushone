@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Navbar from '@/components/Navbar'
@@ -18,7 +18,7 @@ interface Doctor {
   } | null
 }
 
-export default function BookAppointmentPage() {
+function BookAppointmentContent() {
   const [doctor, setDoctor] = useState<Doctor | null>(null)
   const [selectedDate, setSelectedDate] = useState('')
   const [selectedTime, setSelectedTime] = useState('')
@@ -335,5 +335,23 @@ export default function BookAppointmentPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function BookAppointmentPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading...</p>
+          </div>
+        </div>
+      </div>
+    }>
+      <BookAppointmentContent />
+    </Suspense>
   )
 }
