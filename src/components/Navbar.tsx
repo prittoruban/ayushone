@@ -23,15 +23,18 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
 
-  const handleSignOut = async () => {
-    try {
-      console.log('Sign out button clicked')
-      await signOut()
-      setIsProfileMenuOpen(false)
-    } catch (error) {
+  const handleSignOut = () => {
+    console.log('Sign out button clicked')
+    setIsProfileMenuOpen(false) // Close dropdown immediately
+    
+    signOut().then(() => {
+      console.log('Sign out completed successfully')
+    }).catch((error) => {
       console.error('Sign out failed:', error)
-      alert('Failed to sign out. Please try again.')
-    }
+      if (process.env.NODE_ENV === 'development') {
+        alert('Failed to sign out. Please try again.')
+      }
+    })
   }
 
   const navigation = [
@@ -87,7 +90,7 @@ export default function Navbar() {
               <Link
                 key={item.name}
                 href={item.href}
-                className="flex items-center space-x-2 px-4 py-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary-50 dark:hover:bg-secondary-800 transition-all duration-200 group"
+                className="flex items-center space-x-2 px-4 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200 group"
               >
                 <item.icon className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
                 <span className="font-medium">{item.name}</span>
@@ -101,34 +104,34 @@ export default function Navbar() {
               <div className="relative">
                 <button
                   onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-                  className="flex items-center space-x-3 p-2 rounded-xl bg-secondary-50 dark:bg-secondary-800 hover:bg-secondary-100 dark:hover:bg-secondary-700 transition-all duration-200 group"
+                  className="flex items-center space-x-3 p-2 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all duration-200 group"
                 >
-                  <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg flex items-center justify-center text-white font-medium text-sm">
+                  <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center text-white font-medium text-sm">
                     {userProfile.name.charAt(0).toUpperCase()}
                   </div>
                   <div className="hidden sm:block text-left">
-                    <p className="text-sm font-medium text-foreground">{userProfile.name}</p>
+                    <p className="text-sm font-medium text-slate-900 dark:text-white">{userProfile.name}</p>
                     <div className="flex items-center space-x-2">
                       <Badge variant={userProfile.role === 'doctor' ? 'info' : 'success'} size="sm">
                         {userProfile.role === 'doctor' ? 'Doctor' : 'Patient'}
                       </Badge>
                     </div>
                   </div>
-                  <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors duration-200" />
+                  <ChevronDown className="w-4 h-4 text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors duration-200" />
                 </button>
 
                 {/* Profile Dropdown */}
                 {isProfileMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-card rounded-2xl shadow-large border border-secondary-200/50 dark:border-secondary-700/50 py-2 animate-fade-in-down">
-                    <div className="px-4 py-3 border-b border-secondary-100 dark:border-secondary-700">
-                      <p className="text-sm font-medium text-foreground">{userProfile.name}</p>
-                      <p className="text-xs text-muted-foreground">{userProfile.phone || 'No phone number'}</p>
+                  <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-slate-800 rounded-2xl shadow-large border border-slate-200/50 dark:border-slate-700/50 py-2 animate-fade-in-down">
+                    <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-700">
+                      <p className="text-sm font-medium text-slate-900 dark:text-white">{userProfile.name}</p>
+                      <p className="text-xs text-slate-600 dark:text-slate-400">{userProfile.phone || 'No phone number'}</p>
                     </div>
                     
                     {userProfile.role === 'doctor' && (
                       <Link
                         href="/doctor/profile"
-                        className="flex items-center space-x-3 px-4 py-3 text-sm text-muted-foreground hover:bg-secondary-50 dark:hover:bg-secondary-800 transition-colors duration-200"
+                        className="flex items-center space-x-3 px-4 py-3 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-200"
                         onClick={() => setIsProfileMenuOpen(false)}
                       >
                         <Settings className="w-4 h-4" />
@@ -138,7 +141,7 @@ export default function Navbar() {
                     
                     <Link
                       href="/appointments"
-                      className="flex items-center space-x-3 px-4 py-3 text-sm text-muted-foreground hover:bg-secondary-50 dark:hover:bg-secondary-800 transition-colors duration-200"
+                      className="flex items-center space-x-3 px-4 py-3 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-200"
                       onClick={() => setIsProfileMenuOpen(false)}
                     >
                       <Calendar className="w-4 h-4" />
@@ -146,8 +149,12 @@ export default function Navbar() {
                     </Link>
                     
                     <button
-                      onClick={handleSignOut}
-                      className="flex items-center space-x-3 px-4 py-3 text-sm text-error-600 dark:text-error-400 hover:bg-error-50 dark:hover:bg-error-950 transition-colors duration-200 w-full text-left"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        handleSignOut()
+                      }}
+                      className="flex items-center space-x-3 px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200 w-full text-left"
                     >
                       <LogOut className="w-4 h-4" />
                       <span>Sign Out</span>
@@ -173,7 +180,7 @@ export default function Navbar() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary-50 dark:hover:bg-secondary-800 transition-all duration-200"
+              className="md:hidden p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200"
             >
               {isMobileMenuOpen ? (
                 <X className="w-5 h-5" />
@@ -186,13 +193,13 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-secondary-200/50 dark:border-secondary-700/50 animate-fade-in-down">
+          <div className="md:hidden py-4 border-t border-slate-200/50 dark:border-slate-700/50 animate-fade-in-down">
             <div className="space-y-2">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="flex items-center space-x-3 px-4 py-3 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary-50 dark:hover:bg-secondary-800 transition-all duration-200"
+                  className="flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   <item.icon className="w-5 h-5" />

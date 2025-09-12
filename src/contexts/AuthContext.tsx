@@ -123,8 +123,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(null)
       setUserProfile(null)
       
-      // Use Next.js router for navigation
-      router.push('/')
+      // Use Next.js router for navigation with replace to prevent back navigation
+      router.replace('/')
       
     } catch (error) {
       console.error('Error signing out:', error)
