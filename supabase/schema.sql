@@ -61,6 +61,19 @@ CREATE POLICY "Anyone can view doctor user info"
     id IN (SELECT user_id FROM public.doctors WHERE verified_badge = true)
   );
 
+CREATE POLICY "Doctors can view their patients info"
+  ON public.users FOR SELECT
+  USING (
+    role = 'citizen' AND 
+    id IN (
+      SELECT citizen_id 
+      FROM public.appointments 
+      WHERE doctor_id IN (
+        SELECT id FROM public.doctors WHERE user_id = auth.uid()
+      )
+    )
+  );
+
 CREATE POLICY "Users can update own profile"
   ON public.users FOR UPDATE
   USING (auth.uid() = id);

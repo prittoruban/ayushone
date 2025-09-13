@@ -23,7 +23,7 @@ interface Appointment {
   citizen: {
     name: string
     phone: string
-  }
+  } | null
 }
 
 export default function AppointmentDetailsPage({ params }: { params: Promise<{ id: string }> }) {
@@ -241,11 +241,11 @@ export default function AppointmentDetailsPage({ params }: { params: Promise<{ i
                   <div className="bg-gradient-to-r from-green-50 to-transparent dark:from-green-900/20 dark:to-transparent p-4 rounded-xl border border-green-100 dark:border-green-800/30">
                     <div className="flex items-center">
                       <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center text-white font-semibold mr-3">
-                        {appointment.citizen.name.charAt(0).toUpperCase()}
+                        {appointment.citizen?.name?.charAt(0).toUpperCase() || 'P'}
                       </div>
                       <div>
-                        <p className="font-semibold text-gray-900 dark:text-white">{appointment.citizen.name}</p>
-                        <p className="text-sm text-gray-600 dark:text-slate-400">{appointment.citizen.phone}</p>
+                        <p className="font-semibold text-gray-900 dark:text-white">{appointment.citizen?.name || 'Patient'}</p>
+                        <p className="text-sm text-gray-600 dark:text-slate-400">{appointment.citizen?.phone || 'Phone not available'}</p>
                       </div>
                     </div>
                   </div>
