@@ -1,136 +1,178 @@
-'use client'
+"use client";
 
-import { createContext, useContext, useEffect, useState, useCallback } from 'react'
-import { User } from '@supabase/supabase-js'
-import { createClientComponentClient } from '@/lib/supabase'
-import { User as AppUser } from '@/lib/database.types'
-import { useRouter } from 'next/navigation'
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+} from "react";
+import { User } from "@supabase/supabase-js";
+import { createClientComponentClient } from "@/lib/supabase";
+import { User as AppUser } from "@/lib/database.types";
+import { useRouter } from "next/navigation";
 
 interface AuthContextType {
-  user: User | null
-  userProfile: AppUser | null
-  loading: boolean
-  signUp: (email: string, password: string, userData: { name: string; role: 'doctor' | 'citizen'; phone?: string }) => Promise<{ data: unknown; error: unknown }>
-  signIn: (email: string, password: string) => Promise<{ data: unknown; error: unknown }>
-  signOut: () => Promise<void>
+  user: User | null;
+  userProfile: AppUser | null;
+  loading: boolean;
+  signUp: (
+    email: string,
+    password: string,
+    userData: { name: string; role: "doctor" | "citizen"; phone?: string }
+  ) => Promise<{ data: unknown; error: unknown }>;
+  signIn: (
+    email: string,
+    password: string
+  ) => Promise<{ data: unknown; error: unknown }>;
+  signInWithGoogle: () => Promise<{ data: unknown; error: unknown }>;
+  signOut: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
-  const [userProfile, setUserProfile] = useState<AppUser | null>(null)
-  const [loading, setLoading] = useState(true)
-  const supabase = createClientComponentClient()
-  const router = useRouter()
+  const [user, setUser] = useState<User | null>(null);
+  const [userProfile, setUserProfile] = useState<AppUser | null>(null);
+  const [loading, setLoading] = useState(true);
+  const supabase = createClientComponentClient();
+  const router = useRouter();
 
-  const fetchUserProfile = useCallback(async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', userId)
-        .single()
+  const fetchUserProfile = useCallback(
+    async (userId: string) => {
+      try {
+        const { data, error } = await supabase
+          .from("users")
+          .select("*")
+          .eq("id", userId)
+          .single();
 
-      if (error) {
-        console.error('Error fetching user profile:', error)
-        return
+        if (error) {
+          console.error("Error fetching user profile:", error);
+          return;
+        }
+
+        setUserProfile(data);
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
       }
-
-      setUserProfile(data)
-    } catch (error) {
-      console.error('Error fetching user profile:', error)
-    }
-  }, [supabase])
+    },
+    [supabase]
+  );
 
   useEffect(() => {
     // Get initial session
     const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      setUser(session?.user || null)
-      
-      if (session?.user) {
-        await fetchUserProfile(session.user.id)
-      }
-      
-      setLoading(false)
-    }
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      setUser(session?.user || null);
 
-    getSession()
+      if (session?.user) {
+        await fetchUserProfile(session.user.id);
+      }
+
+      setLoading(false);
+    };
+
+    getSession();
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        setUser(session?.user || null)
-        
-        if (session?.user) {
-          await fetchUserProfile(session.user.id)
-        } else {
-          setUserProfile(null)
-        }
-        
-        setLoading(false)
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      setUser(session?.user || null);
+
+      if (session?.user) {
+        await fetchUserProfile(session.user.id);
+      } else {
+        setUserProfile(null);
       }
-    )
 
-    return () => subscription.unsubscribe()
-  }, [supabase.auth, fetchUserProfile])
+      setLoading(false);
+    });
 
-  const signUp = async (email: string, password: string, userData: { name: string; role: 'doctor' | 'citizen'; phone?: string }) => {
+    return () => subscription.unsubscribe();
+  }, [supabase.auth, fetchUserProfile]);
+
+  const signUp = async (
+    email: string,
+    password: string,
+    userData: { name: string; role: "doctor" | "citizen"; phone?: string }
+  ) => {
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          data: userData
-        }
-      })
+          data: userData,
+        },
+      });
 
-      return { data, error }
+      return { data, error };
     } catch (error) {
-      console.error('Error signing up:', error)
-      return { data: null, error }
+      console.error("Error signing up:", error);
+      return { data: null, error };
     }
-  }
+  };
 
   const signIn = async (email: string, password: string) => {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
-        password
-      })
+        password,
+      });
 
-      return { data, error }
+      return { data, error };
     } catch (error) {
-      console.error('Error signing in:', error)
-      return { data: null, error }
+      console.error("Error signing in:", error);
+      return { data: null, error };
     }
-  }
+  };
+
+  const signInWithGoogle = async () => {
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+          queryParams: {
+            access_type: "offline",
+            prompt: "consent",
+          },
+        },
+      });
+
+      return { data, error };
+    } catch (error) {
+      console.error("Error signing in with Google:", error);
+      return { data: null, error };
+    }
+  };
 
   const signOut = async () => {
     try {
-      console.log('Attempting to sign out...')
-      const { error } = await supabase.auth.signOut()
-      
+      console.log("Attempting to sign out...");
+      const { error } = await supabase.auth.signOut();
+
       if (error) {
-        console.error('Sign out error:', error)
-        throw error
+        console.error("Sign out error:", error);
+        throw error;
       }
-      
-      console.log('Sign out successful')
-      
+
+      console.log("Sign out successful");
+
       // Force clear local state
-      setUser(null)
-      setUserProfile(null)
-      
+      setUser(null);
+      setUserProfile(null);
+
       // Use Next.js router for navigation with replace to prevent back navigation
-      router.replace('/')
-      
+      router.replace("/");
     } catch (error) {
-      console.error('Error signing out:', error)
-      throw error
+      console.error("Error signing out:", error);
+      throw error;
     }
-  }
+  };
 
   const value = {
     user,
@@ -138,20 +180,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     loading,
     signUp,
     signIn,
-    signOut
-  }
+    signInWithGoogle,
+    signOut,
+  };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  )
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
-  const context = useContext(AuthContext)
+  const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider')
+    throw new Error("useAuth must be used within an AuthProvider");
   }
-  return context
+  return context;
 }

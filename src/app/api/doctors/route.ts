@@ -21,6 +21,7 @@ export async function GET(request: NextRequest) {
         license_url,
         experience_years,
         languages,
+        location,
         verified_badge,
         created_at,
         user:users!user_id (
@@ -74,6 +75,7 @@ export async function POST(request: NextRequest) {
       license_number,
       experience_years,
       languages,
+      location,
     } = body;
 
     if (!specialty || !city || !user_id) {
@@ -96,32 +98,46 @@ export async function POST(request: NextRequest) {
 
     if (existingDoctor) {
       // Update existing profile
+      const updateData: any = {
+        specialty,
+        city,
+        license_number,
+        experience_years: experience_years || 0,
+        languages: languages || [],
+        verified_badge: true, // Auto-verify for demo purposes
+      };
+
+      // Only update location if provided
+      if (location) {
+        updateData.location = location;
+      }
+
       result = await supabase
         .from("doctors")
-        .update({
-          specialty,
-          city,
-          license_number,
-          experience_years: experience_years || 0,
-          languages: languages || [],
-          verified_badge: true, // Auto-verify for demo purposes
-        })
+        .update(updateData)
         .eq("user_id", user_id)
         .select()
         .single();
     } else {
       // Create new profile
+      const insertData: any = {
+        user_id,
+        specialty,
+        city,
+        license_number,
+        experience_years: experience_years || 0,
+        languages: languages || [],
+        verified_badge: true, // Auto-verify for demo purposes
+      };
+
+      // Only add location if provided
+      if (location) {
+        insertData.location = location;
+      }
+
       result = await supabase
         .from("doctors")
-        .insert({
-          user_id,
-          specialty,
-          city,
-          license_number,
-          experience_years: experience_years || 0,
-          languages: languages || [],
-          verified_badge: true, // Auto-verify for demo purposes
-        })
+        .insert(insertData)
         .select()
         .single();
     }
