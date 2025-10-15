@@ -18,6 +18,10 @@ import {
   Languages,
   Phone,
   X,
+  Filter,
+  SlidersHorizontal,
+  RotateCcw,
+  Target,
 } from "lucide-react";
 
 // Dynamically import the map component to avoid SSR issues
@@ -48,6 +52,7 @@ interface Doctor {
 
 export default function MapPage() {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [filteredDoctors, setFilteredDoctors] = useState<Doctor[]>([]);
   const [loading, setLoading] = useState(true);
   const [userLocation, setUserLocation] = useState<{
     lat: number;
@@ -55,6 +60,14 @@ export default function MapPage() {
   } | null>(null);
   const [locationLoading, setLocationLoading] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
+
+  // Filter states
+  const [selectedRadius, setSelectedRadius] = useState<number>(50); // km
+  const [selectedSpecialty, setSelectedSpecialty] = useState<string>("all");
+  const [selectedCity, setSelectedCity] = useState<string>("all");
+  const [minExperience, setMinExperience] = useState<number>(0);
+  const [showFilters, setShowFilters] = useState(false);
+
   const { user } = useAuth();
 
   useEffect(() => {
@@ -65,6 +78,18 @@ export default function MapPage() {
     }
   }, []);
 
+  // Apply filters when doctors, location, or filter values change
+  useEffect(() => {
+    applyFilters();
+  }, [
+    doctors,
+    userLocation,
+    selectedRadius,
+    selectedSpecialty,
+    selectedCity,
+    minExperience,
+  ]);
+
   const fetchDoctors = async () => {
     setLoading(true);
     try {
@@ -74,6 +99,7 @@ export default function MapPage() {
         // Filter only doctors with location data
         const doctorsWithLocation = data.filter((doc: Doctor) => doc.location);
         setDoctors(doctorsWithLocation);
+        setFilteredDoctors(doctorsWithLocation);
       } else {
         console.error("Failed to fetch doctors");
       }
@@ -84,7 +110,79 @@ export default function MapPage() {
     }
   };
 
-  const getUserLocation = () => {
+  // Calculate distance between two points (Haversine formula)
+  const calculateDistance = (
+    lat1: number,
+    lon1: number,
+    lat2: number,
+    lon2: number
+  ): number => {
+    const R = 6371; // Earth's radius in km
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLon = ((lon2 - lon1) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((lat1 * Math.PI) / 180) *
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  };
+
+  const applyFilters = () => {
+    let filtered = [...doctors];
+
+    // Filter by distance radius
+    if (userLocation) {
+      filtered = filtered.filter((doctor) => {
+        if (!doctor.location) return false;
+        const distance = calculateDistance(
+          userLocation.lat,
+          userLocation.lng,
+          doctor.location.lat,
+          doctor.location.lng
+        );
+        return distance <= selectedRadius;
+      });
+    }
+
+    // Filter by specialty
+    if (selectedSpecialty !== "all") {
+      filtered = filtered.filter(
+        (doctor) => doctor.specialty === selectedSpecialty
+      );
+    }
+
+    // Filter by city
+    if (selectedCity !== "all") {
+      filtered = filtered.filter((doctor) => doctor.city === selectedCity);
+    }
+
+    // Filter by minimum experience
+    if (minExperience > 0) {
+      filtered = filtered.filter(
+        (doctor) => doctor.experience_years >= minExperience
+      );
+    }
+
+    setFilteredDoctors(filtered);
+  };
+
+  const resetFilters = () => {
+    setSelectedRadius(50);
+    setSelectedSpecialty("all");
+    setSelectedCity("all");
+    setMinExperience(0);
+  };
+
+  // Get unique specialties and cities for filter options
+  const specialties = Array.from(
+    new Set(doctors.map((d) => d.specialty))
+  ).sort();
+  const cities = Array.from(new Set(doctors.map((d) => d.city))).sort();
+
+  const getUserLocation = (forceRefresh = false) => {
     // Prevent multiple simultaneous requests
     if (locationLoading) {
       console.log("⏳ Location request already in progress...");
@@ -100,13 +198,16 @@ export default function MapPage() {
     }
 
     setLocationLoading(true);
-    console.log("🔍 Requesting GPS location..."); // Debug
+    console.log(
+      "🔍 Requesting GPS location...",
+      forceRefresh ? "(FORCE REFRESH)" : "(cache allowed)"
+    );
 
     // Options for high accuracy location
     const options = {
       enableHighAccuracy: true, // Force GPS usage instead of WiFi/IP
       timeout: 10000, // 10 seconds timeout
-      maximumAge: 5000, // Use cache up to 5 seconds old (reduces repeated requests)
+      maximumAge: forceRefresh ? 0 : 5000, // Force fresh read when user clicks button, otherwise use cache
     };
 
     navigator.geolocation.getCurrentPosition(
@@ -122,11 +223,28 @@ export default function MapPage() {
           "⏰ Timestamp:",
           new Date(position.timestamp).toLocaleTimeString()
         );
+        console.log("🔄 Age:", Date.now() - position.timestamp, "ms");
 
-        // Only warn if accuracy is very poor, but still use the location
-        if (position.coords.accuracy > 200) {
+        // Provide feedback based on accuracy
+        if (position.coords.accuracy > 100) {
           console.warn(
-            `⚠️ Low accuracy (${position.coords.accuracy}m). For better results, move to an open area.`
+            `⚠️ Low accuracy (${Math.round(
+              position.coords.accuracy
+            )}m). Location may not be precise.`
+          );
+          if (forceRefresh) {
+            alert(
+              `Location updated! Note: Accuracy is ${Math.round(
+                position.coords.accuracy
+              )}m. For better results, move to an open area with clear sky view.`
+            );
+          }
+        } else if (forceRefresh) {
+          // Good accuracy and user explicitly requested location
+          alert(
+            `✅ Location updated successfully! (Accuracy: ${Math.round(
+              position.coords.accuracy
+            )}m)`
           );
         }
 
@@ -194,7 +312,8 @@ export default function MapPage() {
   };
 
   const handleCenterMap = () => {
-    getUserLocation();
+    // Force fresh GPS reading when user explicitly clicks the button
+    getUserLocation(true);
   };
 
   return (
@@ -217,10 +336,20 @@ export default function MapPage() {
             <Button
               variant="primary"
               onClick={handleCenterMap}
+              disabled={locationLoading}
               className="flex items-center space-x-2"
             >
-              <Navigation className="w-5 h-5" />
-              <span>My Location</span>
+              {locationLoading ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <span>Getting Location...</span>
+                </>
+              ) : (
+                <>
+                  <Navigation className="w-5 h-5" />
+                  <span>My Location</span>
+                </>
+              )}
             </Button>
           </div>
 
@@ -234,10 +363,13 @@ export default function MapPage() {
                   </div>
                   <div>
                     <div className="text-2xl font-bold text-slate-900 dark:text-white">
-                      {doctors.length}
+                      {filteredDoctors.length}
+                      <span className="text-sm text-slate-500 dark:text-slate-400 font-normal">
+                        /{doctors.length}
+                      </span>
                     </div>
                     <div className="text-sm text-slate-600 dark:text-slate-400">
-                      Doctors on Map
+                      Doctors Shown
                     </div>
                   </div>
                 </div>
@@ -286,10 +418,145 @@ export default function MapPage() {
               </CardContent>
             </Card>
           </div>
+
+          {/* Filters */}
+          <div className="mt-6">
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center space-x-2">
+                    <SlidersHorizontal className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+                    <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
+                      Filter Doctors
+                    </h3>
+                    <Badge variant="info" className="ml-2">
+                      {filteredDoctors.length} of {doctors.length}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={resetFilters}
+                      className="flex items-center space-x-1"
+                    >
+                      <RotateCcw className="w-4 h-4" />
+                      <span>Reset</span>
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => setShowFilters(!showFilters)}
+                      className="flex items-center space-x-1"
+                    >
+                      <Filter className="w-4 h-4" />
+                      <span>{showFilters ? "Hide" : "Show"} Filters</span>
+                    </Button>
+                  </div>
+                </div>
+
+                {showFilters && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+                    {/* Distance Radius Filter */}
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                        <Target className="w-4 h-4 inline mr-1" />
+                        Radius: {selectedRadius} km
+                      </label>
+                      <input
+                        type="range"
+                        min="5"
+                        max="100"
+                        step="5"
+                        value={selectedRadius}
+                        onChange={(e) =>
+                          setSelectedRadius(Number(e.target.value))
+                        }
+                        disabled={!userLocation}
+                        className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                      />
+                      <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mt-1">
+                        <span>5 km</span>
+                        <span>100 km</span>
+                      </div>
+                      {!userLocation && (
+                        <p className="text-xs text-amber-600 dark:text-amber-400 mt-1">
+                          Enable location to use radius filter
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Specialty Filter */}
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                        <Award className="w-4 h-4 inline mr-1" />
+                        Specialty
+                      </label>
+                      <select
+                        value={selectedSpecialty}
+                        onChange={(e) => setSelectedSpecialty(e.target.value)}
+                        className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      >
+                        <option value="all">All Specialties</option>
+                        {specialties.map((specialty) => (
+                          <option key={specialty} value={specialty}>
+                            {specialty}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* City Filter */}
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                        <MapPin className="w-4 h-4 inline mr-1" />
+                        City
+                      </label>
+                      <select
+                        value={selectedCity}
+                        onChange={(e) => setSelectedCity(e.target.value)}
+                        className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      >
+                        <option value="all">All Cities</option>
+                        {cities.map((city) => (
+                          <option key={city} value={city}>
+                            {city}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Experience Filter */}
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                        <Calendar className="w-4 h-4 inline mr-1" />
+                        Min Experience: {minExperience} years
+                      </label>
+                      <input
+                        type="range"
+                        min="0"
+                        max="30"
+                        step="1"
+                        value={minExperience}
+                        onChange={(e) =>
+                          setMinExperience(Number(e.target.value))
+                        }
+                        className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                      />
+                      <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mt-1">
+                        <span>0 yrs</span>
+                        <span>30+ yrs</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
         </div>
 
         {/* Map */}
-        <Card>
+        <Card className="mt-6">
           <CardContent className="p-6">
             {loading ? (
               <div className="flex items-center justify-center h-[600px]">
@@ -297,7 +564,7 @@ export default function MapPage() {
               </div>
             ) : (
               <MapView
-                doctors={doctors}
+                doctors={filteredDoctors}
                 userLocation={userLocation}
                 onDoctorSelect={setSelectedDoctor}
               />

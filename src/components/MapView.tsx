@@ -83,14 +83,34 @@ function RouteDisplay({
   route,
   routeInfo,
   onClear,
+  fromLocation,
+  toLocation,
 }: {
   route: Array<[number, number]> | null;
   routeInfo: RouteInfo | null;
   onClear: () => void;
+  fromLocation: { lat: number; lng: number } | null;
+  toLocation: { lat: number; lng: number } | null;
 }) {
   const [showDirections, setShowDirections] = useState(false);
 
   if (!route) return null;
+
+  // Generate Google Maps link
+  const generateGoogleMapsLink = () => {
+    if (!fromLocation || !toLocation) return null;
+
+    const origin = `${fromLocation.lat},${fromLocation.lng}`;
+    const destination = `${toLocation.lat},${toLocation.lng}`;
+    return `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&travelmode=driving`;
+  };
+
+  const openInGoogleMaps = () => {
+    const link = generateGoogleMapsLink();
+    if (link) {
+      window.open(link, "_blank");
+    }
+  };
 
   const formatDistance = (meters: number) => {
     if (meters < 1000) {
@@ -100,8 +120,17 @@ function RouteDisplay({
   };
 
   const formatDuration = (seconds: number) => {
+    console.log("🕐 formatDuration called with:", seconds, "seconds");
+
+    if (!seconds || seconds === 0) {
+      console.warn("⚠️ Duration is 0 or undefined!");
+      return "0 min";
+    }
+
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
+
+    console.log("🕐 Formatted:", { hours, minutes });
 
     if (hours > 0) {
       return `${hours}h ${minutes}m`;
@@ -133,64 +162,100 @@ function RouteDisplay({
         </div>
 
         {/* Distance & Time */}
-        {routeInfo && (
-          <div className="p-4 space-y-3">
-            <div className="grid grid-cols-2 gap-3">
-              <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3">
-                <div className="text-xs text-slate-600 dark:text-slate-400 mb-1">
-                  Distance
-                </div>
-                <div className="text-lg font-bold text-blue-600 dark:text-blue-400">
-                  {formatDistance(routeInfo.distance)}
-                </div>
-              </div>
-              <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-3">
-                <div className="text-xs text-slate-600 dark:text-slate-400 mb-1">
-                  Duration
-                </div>
-                <div className="text-lg font-bold text-green-600 dark:text-green-400">
-                  {formatDuration(routeInfo.duration)}
-                </div>
-              </div>
-            </div>
-
-            {/* Directions Toggle */}
-            {routeInfo.steps.length > 0 && (
-              <button
-                onClick={() => setShowDirections(!showDirections)}
-                className="w-full px-4 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg text-sm font-medium transition-colors"
-              >
-                {showDirections ? "Hide" : "Show"} Directions (
-                {routeInfo.steps.length})
-              </button>
-            )}
-
-            {/* Turn-by-turn Directions */}
-            {showDirections && routeInfo.steps.length > 0 && (
-              <div className="mt-3 max-h-60 overflow-y-auto space-y-2 border-t border-slate-200 dark:border-slate-700 pt-3">
-                {routeInfo.steps.map((step, index) => (
-                  <div
-                    key={index}
-                    className="flex items-start space-x-3 p-2 bg-slate-50 dark:bg-slate-700/50 rounded-lg"
-                  >
-                    <div className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold">
-                      {index + 1}
+        {routeInfo &&
+          (() => {
+            console.log("📊 Rendering routeInfo:", routeInfo);
+            return (
+              <div className="p-4 space-y-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3">
+                    <div className="text-xs text-slate-600 dark:text-slate-400 mb-1">
+                      Distance
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm text-slate-900 dark:text-white">
-                        {step.instruction}
-                      </p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                        {formatDistance(step.distance)} •{" "}
-                        {formatDuration(step.duration)}
-                      </p>
+                    <div className="text-lg font-bold text-blue-600 dark:text-blue-400">
+                      {formatDistance(routeInfo.distance)}
                     </div>
                   </div>
-                ))}
+                  <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-3">
+                    <div className="text-xs text-slate-600 dark:text-slate-400 mb-1">
+                      Duration
+                    </div>
+                    <div className="text-lg font-bold text-green-600 dark:text-green-400">
+                      {formatDuration(routeInfo.duration )}
+                    </div>
+                    {/* Debug info */}
+               
+                  </div>
+                </div>
+
+                {/* Google Maps Button */}
+                {fromLocation && toLocation && (
+                  <button
+                    onClick={openInGoogleMaps}
+                    className="w-full px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-all flex items-center justify-center space-x-2 shadow-md hover:shadow-lg"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                    </svg>
+                    <span>Open in Google Maps</span>
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                      />
+                    </svg>
+                  </button>
+                )}
+
+                {/* Directions Toggle */}
+                {routeInfo.steps.length > 0 && (
+                  <button
+                    onClick={() => setShowDirections(!showDirections)}
+                    className="w-full px-4 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg text-sm font-medium transition-colors"
+                  >
+                    {showDirections ? "Hide" : "Show"} Directions (
+                    {routeInfo.steps.length})
+                  </button>
+                )}
+
+                {/* Turn-by-turn Directions */}
+                {showDirections && routeInfo.steps.length > 0 && (
+                  <div className="mt-3 max-h-60 overflow-y-auto space-y-2 border-t border-slate-200 dark:border-slate-700 pt-3">
+                    {routeInfo.steps.map((step, index) => (
+                      <div
+                        key={index}
+                        className="flex items-start space-x-3 p-2 bg-slate-50 dark:bg-slate-700/50 rounded-lg"
+                      >
+                        <div className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                          {index + 1}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm text-slate-900 dark:text-white">
+                            {step.instruction}
+                          </p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                            {formatDistance(step.distance)} •{" "}
+                            {formatDuration(step.duration)}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-        )}
+            );
+          })()}
       </div>
     </>
   );
@@ -254,10 +319,16 @@ export default function MapView({
       if (response.ok) {
         const data = await response.json();
 
+        console.log("📦 Full API Response:", data);
+
         if (data.features && data.features.length > 0) {
           const feature = data.features[0];
           const coordinates = feature.geometry.coordinates[0];
           const properties = feature.properties;
+
+          console.log("📋 Properties object:", properties);
+          console.log("⏱️ Time value:", properties.time);
+          console.log("📏 Distance value:", properties.distance);
 
           // Convert from [lng, lat] to [lat, lng] for Leaflet
           const routePoints: Array<[number, number]> = coordinates.map(
@@ -266,19 +337,31 @@ export default function MapView({
 
           // Extract route details
           const distance = properties.distance || 0; // in meters
-          const duration = properties.time ? properties.time / 1000 : 0; // Convert milliseconds to seconds
+
+          // ⚠️ IMPORTANT: Geoapify returns time in SECONDS (not milliseconds!)
+          const timeValue = properties.time || properties.duration || 0;
+          const duration = timeValue; // Already in seconds, no conversion needed!
+
+          console.log("🔍 Extracted route data:", {
+            rawTime: properties.time,
+            timeInSeconds: timeValue,
+            durationSeconds: duration,
+            durationMinutes: Math.round(duration / 60),
+            distanceMeters: distance,
+            distanceKm: (distance / 1000).toFixed(2),
+          });
 
           // Extract turn-by-turn directions
           const steps = properties.legs?.[0]?.steps || [];
           const directions = steps.map((step: any) => ({
             instruction: step.instruction?.text || "Continue",
             distance: step.distance || 0,
-            duration: step.time ? step.time / 1000 : 0, // Convert to seconds
+            duration: step.time || 0, // Already in seconds!
           }));
 
           console.log("✅ Route fetched:", {
             distance: `${(distance / 1000).toFixed(2)} km`,
-            duration: `${Math.round(duration / 60)} min`,
+            duration: `${Math.round(duration / 60)} min (${duration}s)`,
             steps: directions.length,
           });
 
@@ -452,6 +535,8 @@ export default function MapView({
           route={route}
           routeInfo={routeInfo}
           onClear={clearRoute}
+          fromLocation={userLocation}
+          toLocation={selectedDoctor?.location || null}
         />
       </MapContainer>
     </div>
