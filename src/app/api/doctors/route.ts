@@ -93,7 +93,8 @@ export async function POST(request: NextRequest) {
           city,
           license_number,
           experience_years: experience_years || 0,
-          languages: languages || []
+          languages: languages || [],
+          verified_badge: true // Auto-verify for demo purposes
         })
         .eq('user_id', user_id)
         .select()
@@ -109,7 +110,7 @@ export async function POST(request: NextRequest) {
           license_number,
           experience_years: experience_years || 0,
           languages: languages || [],
-          verified_badge: false // Will be set to true after license upload
+          verified_badge: true // Auto-verify for demo purposes
         })
         .select()
         .single()
