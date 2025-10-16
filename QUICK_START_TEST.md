@@ -3,6 +3,7 @@
 ## Status: ✅ ALL FIXES APPLIED
 
 Your authentication system has been completely fixed:
+
 - ✅ OAuth callback no longer tries to insert non-existent columns
 - ✅ Database types match actual schema (5 fields only)
 - ✅ Profile creation handled by database trigger
@@ -20,20 +21,22 @@ Your authentication system has been completely fixed:
 4. Paste this query:
 
 ```sql
-SELECT 
+SELECT
   tgname as trigger_name,
   tgenabled as enabled
-FROM pg_trigger 
+FROM pg_trigger
 WHERE tgname = 'on_auth_user_created';
 ```
 
 5. Click "Run"
 
 **Expected Result:** You should see one row with:
+
 - `trigger_name`: `on_auth_user_created`
 - `enabled`: `O` (means "Enabled")
 
 **If you see NO results**, the trigger doesn't exist! Do this:
+
 1. Open the file: `supabase/verify_and_fix_trigger.sql`
 2. Copy the entire contents
 3. Paste into Supabase SQL Editor
@@ -52,12 +55,14 @@ WHERE tgname = 'on_auth_user_created';
 6. Watch the browser console (F12 → Console tab)
 
 **Expected behavior:**
+
 - Redirects to Google → You approve → Redirects back to your app
 - Console logs: "New user detected, database trigger should create profile..."
 - Lands on: http://localhost:3000/profile?new=true
 - Profile page shows your name and email from Google
 
 **If it fails:**
+
 - Check the error in browser console
 - Check Supabase Dashboard → Logs → SQL logs
 - Verify the trigger exists (Step 1)
@@ -69,6 +74,7 @@ WHERE tgname = 'on_auth_user_created';
 3. Find your Google account (by name or look for newest entry)
 
 **Should see:**
+
 - `id`: Your user UUID
 - `name`: Your Google name
 - `role`: "citizen"
@@ -83,6 +89,7 @@ WHERE tgname = 'on_auth_user_created';
 2. Click "Sign Out"
 
 **Expected:**
+
 - Redirects to http://localhost:3000/auth/signin
 - Navbar shows "Sign In" button (not your profile icon)
 - Console logs: "Sign out successful!"
@@ -94,6 +101,7 @@ WHERE tgname = 'on_auth_user_created';
 3. Choose the SAME Google account from Step 2
 
 **Expected:**
+
 - Quick redirect (no profile creation this time)
 - Lands on: http://localhost:3000/profile (no ?new=true)
 - Shows your existing profile data
@@ -107,6 +115,7 @@ WHERE tgname = 'on_auth_user_created';
 2. Click "Update Profile"
 
 **Expected:**
+
 - Green success message appears
 - Refresh the page → Changes should persist
 - Check Supabase users table → Should see updated values
@@ -114,22 +123,29 @@ WHERE tgname = 'on_auth_user_created';
 ## Common Issues
 
 ### "Could not find the 'avatar_url' column"
+
 **Status:** ✅ FIXED - This was the original error, now resolved
 
 ### Profile page shows loading forever
+
 **Status:** ✅ FIXED - Loading logic simplified
 
 ### Sign out doesn't work
+
 **Status:** ✅ FIXED - Now uses window.location.href
 
 ### OAuth redirects to signin with error
+
 **Possible causes:**
+
 1. Trigger doesn't exist → Run Step 1 verification
 2. Google OAuth not configured → Check Supabase Dashboard → Authentication → Providers → Google
 3. Callback URL incorrect → Should be: `http://localhost:3000/auth/callback`
 
 ### Profile not created after OAuth
+
 **Solutions:**
+
 1. Verify trigger exists (Step 1)
 2. Check Supabase logs: Dashboard → Logs → SQL
 3. Look for errors in the `handle_new_user` function
@@ -138,6 +154,7 @@ WHERE tgname = 'on_auth_user_created';
 ## Additional Tests (Optional)
 
 ### Test Email/Password Signup:
+
 1. Sign out
 2. Go to http://localhost:3000/auth/signup
 3. Fill form with:
