@@ -1,15 +1,23 @@
 import { createClient } from "@supabase/supabase-js";
 import { createBrowserClient, createServerClient } from "@supabase/ssr";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
 
 // Client-side Supabase client
-export const createClientComponentClient = () =>
-  createBrowserClient(supabaseUrl, supabaseAnonKey);
+export const createClientComponentClient = () => {
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error("Missing Supabase environment variables");
+  }
+  return createBrowserClient(supabaseUrl, supabaseAnonKey);
+};
 
 // Server-side Supabase client for route handlers (proper PKCE support)
 export const createServerSupabaseClient = async () => {
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error("Missing Supabase environment variables");
+  }
+
   // Import cookies dynamically to avoid build-time issues
   const { cookies } = await import("next/headers");
   const cookieStore = await cookies();
@@ -35,4 +43,7 @@ export const createServerSupabaseClient = async () => {
 };
 
 // Default client for general operations
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase =
+  supabaseUrl && supabaseAnonKey
+    ? createClient(supabaseUrl, supabaseAnonKey)
+    : (null as any);

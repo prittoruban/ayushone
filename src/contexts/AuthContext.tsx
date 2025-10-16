@@ -10,7 +10,6 @@ import {
 import { User } from "@supabase/supabase-js";
 import { createClientComponentClient } from "@/lib/supabase";
 import { User as AppUser } from "@/lib/database.types";
-import { useRouter } from "next/navigation";
 
 interface AuthContextType {
   user: User | null;
@@ -35,8 +34,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<AppUser | null>(null);
   const [loading, setLoading] = useState(true);
-  const supabase = createClientComponentClient();
-  const router = useRouter();
+  const [supabase] = useState(() => createClientComponentClient());
 
   const fetchUserProfile = useCallback(
     async (userId: string, retryCount = 0) => {
