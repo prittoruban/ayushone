@@ -6,7 +6,7 @@
 
 // export default nextConfig;
 
-
+import type { NextConfig } from "next";
 import js from "@eslint/js";
 import nextPlugin from "@next/eslint-plugin-next";
 import tseslint from "typescript-eslint";
