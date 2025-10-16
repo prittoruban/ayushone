@@ -10,10 +10,19 @@ DROP TABLE IF EXISTS public.users CASCADE;
 -- ======================
 CREATE TABLE public.users (
   id uuid NOT NULL,
+  email text UNIQUE NOT NULL,
   name text NOT NULL,
   role text NOT NULL CHECK (role IN ('doctor', 'citizen')),
   phone text,
+  avatar_url text,
+  bio text,
+  address text,
+  city text,
+  country text,
+  date_of_birth date,
+  gender text CHECK (gender IN ('male', 'female', 'other', 'prefer_not_to_say')),
   created_at timestamp with time zone DEFAULT now(),
+  updated_at timestamp with time zone DEFAULT now(),
   CONSTRAINT users_pkey PRIMARY KEY (id),
   CONSTRAINT users_id_fkey FOREIGN KEY (id) REFERENCES auth.users(id)
 );

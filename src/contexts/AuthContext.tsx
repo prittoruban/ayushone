@@ -39,7 +39,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   const fetchUserProfile = useCallback(
-    async (userId: string) => {
+    async (userId: string, retryCount = 0) => {
       try {
         const { data, error } = await supabase
           .from("users")
@@ -48,10 +48,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           .single();
 
         if (error) {
-          console.error("Error fetching user profile:", error);
+          // PGRST116 means "not found" - might be new OAuth user or profile being created
+          if (error.code === "PGRST116") {
+            console.log(
+              "User profile not found (attempt " + (retryCount + 1) + ")"
+            );
+
+            // Retry up to 3 times with delay for new OAuth users
+            if (retryCount < 3) {
+              console.log("Retrying in 1 second...");
+              setTimeout(() => {
+                fetchUserProfile(userId, retryCount + 1);
+              }, 1000);
+            } else {
+              console.log(
+                "Profile still not found after retries - new OAuth user:",
+                userId
+              );
+              setUserProfile(null);
+            }
+          } else {
+            console.error("Error fetching user profile:", error);
+          }
           return;
         }
 
+        console.log("User profile loaded:", data.email);
         setUserProfile(data);
       } catch (error) {
         console.error("Error fetching user profile:", error);
@@ -63,16 +85,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Get initial session
     const getSession = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      setUser(session?.user || null);
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
 
-      if (session?.user) {
-        await fetchUserProfile(session.user.id);
+        console.log(
+          "Initial session check:",
+          session?.user?.email || "No user"
+        );
+        setUser(session?.user || null);
+
+        if (session?.user) {
+          await fetchUserProfile(session.user.id);
+        }
+
+        setLoading(false);
+      } catch (error) {
+        console.error("Error getting session:", error);
+        setLoading(false);
       }
-
-      setLoading(false);
     };
 
     getSession();
@@ -81,6 +113,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log(
+        "Auth state changed:",
+        event,
+        session?.user?.email || "No user"
+      );
+
       setUser(session?.user || null);
 
       if (session?.user) {
@@ -118,12 +156,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signIn = async (email: string, password: string) => {
     try {
+      console.log("Attempting to sign in with email:", email);
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      return { data, error };
+      if (error) {
+        console.error("Sign in error:", error);
+        return { data: null, error };
+      }
+
+      console.log("Sign in successful:", data.user?.email);
+
+      // Fetch user profile after successful login
+      if (data.user) {
+        await fetchUserProfile(data.user.id);
+      }
+
+      return { data, error: null };
     } catch (error) {
       console.error("Error signing in:", error);
       return { data: null, error };
@@ -136,12 +187,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         provider: "google",
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
+          skipBrowserRedirect: false,
           queryParams: {
             access_type: "offline",
             prompt: "consent",
           },
         },
       });
+
+      if (error) {
+        console.error("OAuth initiation error:", error);
+      }
 
       return { data, error };
     } catch (error) {
@@ -160,16 +216,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         throw error;
       }
 
-      console.log("Sign out successful");
+      console.log("Sign out successful, clearing state...");
 
-      // Force clear local state
+      // Force clear local state immediately
       setUser(null);
       setUserProfile(null);
 
-      // Use Next.js router for navigation with replace to prevent back navigation
-      router.replace("/");
+      // Redirect to home page
+      console.log("Redirecting to home page...");
+      window.location.href = "/";
     } catch (error) {
       console.error("Error signing out:", error);
+      // Even if there's an error, try to clear state and redirect
+      setUser(null);
+      setUserProfile(null);
+      window.location.href = "/";
       throw error;
     }
   };

@@ -10,7 +10,7 @@ export interface Database {
           created_at: string;
         };
         Insert: {
-          id?: string;
+          id: string;
           name: string;
           role: "doctor" | "citizen";
           phone?: string | null;
@@ -22,6 +22,7 @@ export interface Database {
           role?: "doctor" | "citizen";
           phone?: string | null;
           created_at?: string;
+          updated_at?: string;
         };
       };
       doctors: {

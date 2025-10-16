@@ -24,20 +24,18 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
     console.log("Sign out button clicked");
     setIsProfileMenuOpen(false); // Close dropdown immediately
 
-    signOut()
-      .then(() => {
-        console.log("Sign out completed successfully");
-      })
-      .catch((error) => {
-        console.error("Sign out failed:", error);
-        if (process.env.NODE_ENV === "development") {
-          alert("Failed to sign out. Please try again.");
-        }
-      });
+    try {
+      await signOut();
+      console.log("Sign out completed successfully");
+    } catch (error) {
+      console.error("Sign out failed:", error);
+      // Force redirect even on error
+      window.location.href = "/";
+    }
   };
 
   const navigation = [
@@ -149,6 +147,15 @@ export default function Navbar() {
                       </p>
                     </div>
 
+                    <Link
+                      href="/profile"
+                      className="flex items-center space-x-3 px-4 py-3 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-200"
+                      onClick={() => setIsProfileMenuOpen(false)}
+                    >
+                      <User className="w-4 h-4" />
+                      <span>My Profile</span>
+                    </Link>
+
                     {userProfile.role === "doctor" && (
                       <Link
                         href="/doctor/profile"
@@ -156,7 +163,7 @@ export default function Navbar() {
                         onClick={() => setIsProfileMenuOpen(false)}
                       >
                         <Settings className="w-4 h-4" />
-                        <span>Manage Profile</span>
+                        <span>Doctor Profile</span>
                       </Link>
                     )}
 

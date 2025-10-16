@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
@@ -17,6 +17,7 @@ import {
   Shield,
   CheckCircle,
   Leaf,
+  AlertCircle,
 } from "lucide-react";
 
 export default function SignInPage() {
@@ -28,6 +29,27 @@ export default function SignInPage() {
 
   const { signIn, signInWithGoogle } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Check for OAuth errors from callback
+  useEffect(() => {
+    const errorParam = searchParams.get("error");
+    const detailsParam = searchParams.get("details");
+
+    if (errorParam === "session_failed") {
+      setError(
+        `Google sign-in failed: ${
+          detailsParam || "Could not establish session. Please try again."
+        }`
+      );
+    } else if (errorParam === "no_session") {
+      setError("Session could not be verified. Please try signing in again.");
+    } else if (errorParam === "oauth_failed") {
+      setError("OAuth authentication failed. Please try again.");
+    } else if (errorParam === "profile_creation_failed") {
+      setError("Could not create user profile. Please contact support.");
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,17 +57,29 @@ export default function SignInPage() {
     setError("");
 
     try {
-      const { error } = await signIn(email, password);
+      console.log("Sign-in form submitted");
+      const result = await signIn(email, password);
 
-      if (error) {
-        setError(typeof error === "string" ? error : "Failed to sign in");
+      if (result.error) {
+        console.error("Sign-in error:", result.error);
+        const errorMessage =
+          typeof result.error === "object" &&
+          result.error !== null &&
+          "message" in result.error
+            ? (result.error as { message: string }).message
+            : typeof result.error === "string"
+            ? result.error
+            : "Failed to sign in. Please check your credentials.";
+        setError(errorMessage);
+        setLoading(false);
       } else {
-        router.push("/");
+        console.log("Sign-in successful, redirecting...");
+        // Use window.location for more reliable redirect
+        window.location.href = "/";
       }
     } catch (error) {
       console.error("Signin error:", error);
       setError("An unexpected error occurred");
-    } finally {
       setLoading(false);
     }
   };
