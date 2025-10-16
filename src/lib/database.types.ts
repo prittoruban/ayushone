@@ -21,8 +21,6 @@ export interface Database {
           name?: string;
           role?: "doctor" | "citizen";
           phone?: string | null;
-          created_at?: string;
-          updated_at?: string;
         };
       };
       doctors: {
